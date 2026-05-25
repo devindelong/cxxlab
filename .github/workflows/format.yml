@@ -1,0 +1,20 @@
+name: Format
+
+on: [push, pull_request]
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install clang-format
+        run: pacman -Syu --noconfirm clang
+
+      - name: Check formatting
+        run: |
+          find include tests -name '*.cpp' -o -name '*.hpp' | \
+            xargs clang-format --dry-run --Werror

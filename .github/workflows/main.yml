@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [release, debug, asan-ubsan, tsan]
+
+    steps:
+      - name: Install dependencies
+        run: pacman -Syu --noconfirm git cmake ninja gcc catch2
+
+      - uses: actions/checkout@v5
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.sanitizer }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.sanitizer }}
+
+      - name: Test
+        run: ctest --preset ${{ matrix.sanitizer }}

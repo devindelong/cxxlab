@@ -1,0 +1,50 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: pacman -Syu --noconfirm git cmake ninja gcc gcovr catch2
+
+      - name: Configure
+        run: cmake --preset coverage
+
+      - name: Build
+        run: cmake --build --preset coverage
+
+      - name: Test
+        run: ctest --preset coverage
+
+      - name: Generate report
+        run: |
+          mkdir -p coverage
+          gcovr \
+            --root . \
+            --object-directory ./build/coverage \
+            --exclude 'tests/.*' \
+            --exclude 'build/coverage/_deps/.*' \
+            --html --html-details \
+            -o coverage/index.html \
+            --lcov coverage/coverage.lcov
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage.lcov

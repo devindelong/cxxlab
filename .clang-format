@@ -1,0 +1,43 @@
+BasedOnStyle: LLVM
+ColumnLimit: 100
+
+# Tab/space
+
+IndentWidth: 3
+UseTab: Never
+
+# Indentation
+
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+IndentPPDirectives: AfterHash
+NamespaceIndentation: None
+ContinuationIndentWidth: 3
+
+# Line breaks
+
+AlignAfterOpenBracket: AlwaysBreak
+BinPackParameters: false
+BreakConstructorInitializers: BeforeColon
+BreakBeforeBraces: Allman
+AlwaysBreakAfterReturnType: None
+
+# Templates
+
+BreakTemplateDeclarations: Yes
+
+# Lambdas.
+
+LambdaBodyIndentation: Signature
+AllowShortLambdasOnASingleLine: true
+
+# Alignment
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+AlignEscapedNewlines: LeftWithLastLine
+
+# Include sorting
+
+SortIncludes: true
+IncludeBlocks: Preserve

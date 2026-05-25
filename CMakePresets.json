@@ -1,0 +1,173 @@
+{
+   "version": 6,
+   "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 25
+   },
+
+   "configurePresets": [
+      {
+         "name": "base",
+         "hidden": true,
+         "generator": "Ninja",
+         "binaryDir": "${sourceDir}/build/${presetName}",
+         "cacheVariables": {
+            "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+            "CMAKE_COLOR_DIAGNOSTICS": "ON",
+            "ENABLE_ASAN": "OFF",
+            "ENABLE_TSAN": "OFF",
+            "ENABLE_UBSAN": "OFF",
+            "ENABLE_COVERAGE": "OFF"
+         }
+      },
+      {
+         "name": "debug",
+         "inherits": "base",
+         "displayName": "Debug",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Debug"
+         }
+      },
+      {
+         "name": "release",
+         "inherits": "base",
+         "displayName": "Release",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Release"
+         }
+      },
+      {
+         "name": "release-debug",
+         "inherits": "base",
+         "displayName": "RelWithDebInfo",
+         "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+         }
+      },
+      {
+         "name": "asan",
+         "inherits": "debug",
+         "displayName": "ASan",
+         "cacheVariables": {
+            "ENABLE_ASAN": "ON"
+         }
+      },
+      {
+         "name": "tsan",
+         "inherits": "debug",
+         "displayName": "TSan",
+         "cacheVariables": {
+            "ENABLE_TSAN": "ON"
+         }
+      },
+      {
+         "name": "ubsan",
+         "inherits": "debug",
+         "displayName": "UBSan",
+         "cacheVariables": {
+            "ENABLE_UBSAN": "ON"
+         }
+      },
+      {
+         "name": "asan-ubsan",
+         "inherits": "debug",
+         "displayName": "ASan + UBSan",
+         "cacheVariables": {
+            "ENABLE_ASAN": "ON",
+            "ENABLE_UBSAN": "ON"
+         }
+      },
+      {
+         "name": "coverage",
+         "inherits": "debug",
+         "cacheVariables": {
+            "ENABLE_COVERAGE": "ON"
+         }
+      }
+   ],
+
+   "buildPresets": [
+      {
+         "name": "debug",
+         "configurePreset": "debug"
+      },
+      {
+         "name": "release",
+         "configurePreset": "release"
+      },
+      {
+         "name": "release-debug",
+         "configurePreset": "release-debug"
+      },
+      {
+         "name": "asan",
+         "configurePreset": "asan"
+      },
+      {
+         "name": "tsan",
+         "configurePreset": "tsan"
+      },
+      {
+         "name": "ubsan",
+         "configurePreset": "ubsan"
+      },
+      {
+         "name": "asan-ubsan",
+         "configurePreset": "asan-ubsan"
+      },
+      {
+         "name": "coverage",
+         "configurePreset": "coverage"
+      }
+   ],
+
+   "testPresets": [
+      {
+         "name": "base",
+         "hidden": true,
+         "output": {
+            "outputOnFailure": true
+         }
+      },
+      {
+         "name": "release",
+         "inherits": "base",
+         "configurePreset": "release"
+      },
+      {
+         "name": "debug",
+         "inherits": "base",
+         "configurePreset": "debug"
+      },
+      {
+         "name": "release-debug",
+         "inherits": "base",
+         "configurePreset": "release-debug"
+      },
+      {
+         "name": "asan",
+         "inherits": "base",
+         "configurePreset": "asan"
+      },
+      {
+         "name": "tsan",
+         "inherits": "base",
+         "configurePreset": "tsan"
+      },
+      {
+         "name": "ubsan",
+         "inherits": "base",
+         "configurePreset": "ubsan"
+      },
+      {
+         "name": "asan-ubsan",
+         "inherits": "base",
+         "configurePreset": "asan-ubsan"
+      },
+      {
+         "name": "coverage",
+         "inherits": "base",
+         "configurePreset": "coverage"
+      }
+   ]
+}
