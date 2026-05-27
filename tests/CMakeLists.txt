@@ -8,8 +8,6 @@
 #
 # ==============================================================================
 
-include(${CXXLAB_CMAKE_PATH}/coverage.cmake)
-
 include (FetchContent)
 FetchContent_Declare (
   Catch2
@@ -18,6 +16,8 @@ FetchContent_Declare (
 )
 FetchContent_MakeAvailable (Catch2)
 include(Catch)
+
+include(${CXXLAB_CMAKE_PATH}/coverage.cmake)
 
 set (CXXLAB_TESTS_TARGET "${CXXLAB_LIBRARY_NAME}_tests")
 
@@ -50,8 +50,15 @@ add_test (
   COMMAND ${CXXLAB_TESTS_TARGET}
  )
 
- if (ENABLE_COVERAGE)
-   target_enable_coverage(${CXXLAB_TESTS_TARGET})
- endif()
+# Silence this warning
+# Clang 22 error: '__COUNTER__' is a C2y extension [-Werror,-Wc2y-extensions]
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${CXXLAB_TESTS_TARGET} PRIVATE -Wno-c2y-extensions)
+endif()
 
- catch_discover_tests (${CXXLAB_TESTS_TARGET})
+
+if (ENABLE_COVERAGE)
+  target_enable_coverage(${CXXLAB_TESTS_TARGET})
+endif()
+
+catch_discover_tests (${CXXLAB_TESTS_TARGET})
