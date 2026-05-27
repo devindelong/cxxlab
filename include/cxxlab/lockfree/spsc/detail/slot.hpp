@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "cxxlab/type_traits/like.hpp"
+
 #include <array>
 #include <cstddef>
 #include <new>
@@ -17,17 +19,6 @@
 
 namespace cxxlab::spsc
 {
-
-template <typename Self, typename T>
-struct like_pointer : std::type_identity<std::conditional_t<
-                         std::is_const_v<std::remove_reference_t<Self>>,
-                         std::add_pointer_t<std::add_const_t<T>>,
-                         std::add_pointer_t<T>>>
-{
-};
-
-template <typename Self, typename T>
-using like_pointer_t = like_pointer<Self, T>::type;
 
 namespace detail
 {

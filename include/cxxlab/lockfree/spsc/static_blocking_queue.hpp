@@ -9,64 +9,17 @@
 
 #pragma once
 
+#include "cxxlab/concepts/chrono.hpp"
 #include "cxxlab/lockfree/spsc/static_queue.hpp"
 #include "cxxlab/memory/cache_line_size.hpp"
 
 #include <algorithm>
 #include <chrono>
+#include <concepts>
 #include <cstddef>
 #include <optional>
 #include <semaphore>
 #include <utility>
-
-#include <concepts>
-#include <type_traits>
-
-// TODO: relocate these
-namespace cxxlab
-{
-namespace detail
-{
-
-/**
- * @brief Concept to check if a type is std::chrono::time_point.
- * @detail Private implementation where this fails if T ios cvref qualified.
- */
-template <typename T>
-concept chrono_time_point_impl = requires {
-   typename T::clock;
-   typename T::duration;
-   typename T::rep;
-   typename T::period;
-   requires std::same_as<T, std::chrono::time_point<typename T::clock, typename T::duration>>;
-};
-
-/**
- * @brief Concept to check if a type is std::chrono::duration.
- * @detail Private implementation where this fails if T ios cvref qualified.
- */
-template <typename T>
-concept chrono_duration_impl = requires {
-   typename T::rep;
-   typename T::period;
-   requires std::same_as<T, std::chrono::duration<typename T::rep, typename T::period>>;
-};
-} // namespace detail
-
-/**
- * @brief Concept to check if a type is std::chrono::time_point.
- * @tparam T Possibly cvref qualified type to check.
- */
-template <typename T>
-concept chrono_time_point = detail::chrono_time_point_impl<std::remove_cvref_t<T>>;
-
-/**
- * @brief Concept to check if a type is std::chrono::duration.
- * @tparam T Possibly cvref qualified type to check.
- */
-template <typename T>
-concept chrono_duration = detail::chrono_duration_impl<std::remove_cvref_t<T>>;
-} // namespace cxxlab
 
 namespace cxxlab::spsc
 {

@@ -1,5 +1,4 @@
 /**
- * @file type_traits.hpp
  * @copyright Copyright (c) 2025, Devin DeLong. All rights reserved.
  *
  * @license This code is distributed under the BSD 3-Clause License.
