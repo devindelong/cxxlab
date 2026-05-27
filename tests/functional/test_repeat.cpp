@@ -19,5 +19,5 @@ TEST_CASE("functional: repeat", "[repeat]")
    auto expected = std::size_t{10};
 
    cxxlab::repeat([&result]() { ++result; }, expected);
-   REQUIRE(result == expected);
+   CHECK(result == expected);
 }

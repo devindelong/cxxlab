@@ -15,7 +15,7 @@
 
 TEST_CASE("aligned_wrapper: alignment is correct", "[aligned_wrapper][alignof]")
 {
-   REQUIRE(alignof(cxxlab::aligned_wrapper<int, 64>) == 64);
-   REQUIRE(
+   STATIC_CHECK(alignof(cxxlab::aligned_wrapper<int, 64>) == 64);
+   STATIC_CHECK(
       alignof(cxxlab::cache_aligned_wrapper<int>) == std::hardware_destructive_interference_size);
 }

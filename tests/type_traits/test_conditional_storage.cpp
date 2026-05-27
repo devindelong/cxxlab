@@ -30,14 +30,14 @@ struct conditional_storage_pair
 TEST_CASE(
    "conditional_storage_t: check conditional sizeof", "[type_traits][conditional_storage][sizeof]")
 {
-   REQUIRE(sizeof(cxxlab::conditional_storage_t<true, int>) == sizeof(int));
-   REQUIRE(std::is_empty_v<cxxlab::conditional_storage_t<false, int>>);
+   STATIC_CHECK(sizeof(cxxlab::conditional_storage_t<true, int>) == sizeof(int));
+   STATIC_CHECK(std::is_empty_v<cxxlab::conditional_storage_t<false, int>>);
 }
 
 TEST_CASE("conditional_storage_t: empty type uniqueness", "[sizeof]")
 {
-   REQUIRE(std::is_empty_v<conditional_storage_pair<false>>);
-   REQUIRE(sizeof(conditional_storage_pair<true>) == 2 * sizeof(int));
+   STATIC_CHECK(std::is_empty_v<conditional_storage_pair<false>>);
+   STATIC_CHECK(sizeof(conditional_storage_pair<true>) == 2 * sizeof(int));
 }
 
 TEST_CASE(
@@ -46,10 +46,10 @@ TEST_CASE(
 {
    using container = std::vector<int>;
 
-   REQUIRE(
+   STATIC_CHECK(
       std::constructible_from<
          cxxlab::conditional_storage_t<true, container>, std::initializer_list<int>>);
-   REQUIRE(
+   STATIC_CHECK(
       std::constructible_from<
          cxxlab::conditional_storage_t<false, container>, std::initializer_list<int>>);
 }
@@ -59,6 +59,8 @@ TEST_CASE(
 {
    using container = std::tuple<int, int, int>;
 
-   REQUIRE(std::constructible_from<cxxlab::conditional_storage_t<true, container>, int, int, int>);
-   REQUIRE(std::constructible_from<cxxlab::conditional_storage_t<false, container>, int, int, int>);
+   STATIC_CHECK(
+      std::constructible_from<cxxlab::conditional_storage_t<true, container>, int, int, int>);
+   STATIC_CHECK(
+      std::constructible_from<cxxlab::conditional_storage_t<false, container>, int, int, int>);
 }

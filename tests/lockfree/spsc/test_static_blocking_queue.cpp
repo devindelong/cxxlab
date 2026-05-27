@@ -37,85 +37,85 @@ TEST_CASE("spsc::static_blocking_queue: correct size tracking", "[spsc][blocking
    // Enqueue
 
    // No elements to dequeue.
-   REQUIRE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 0);
-   REQUIRE(queue.available() == 4);
-   REQUIRE_FALSE(queue.try_dequeue());
+   CHECK(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 0);
+   CHECK(queue.available() == 4);
+   CHECK_FALSE(queue.try_dequeue());
 
    // Acxxlab element 1
-   REQUIRE(queue.try_enqueue(0));
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 1);
-   REQUIRE(queue.available() == 3);
+   CHECK(queue.try_enqueue(0));
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 1);
+   CHECK(queue.available() == 3);
 
    // Acxxlab element 2
-   REQUIRE(queue.try_enqueue(1));
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 2);
-   REQUIRE(queue.available() == 2);
+   CHECK(queue.try_enqueue(1));
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 2);
+   CHECK(queue.available() == 2);
 
    // Acxxlab element 3
-   REQUIRE(queue.try_enqueue(2));
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 3);
-   REQUIRE(queue.available() == 1);
+   CHECK(queue.try_enqueue(2));
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 3);
+   CHECK(queue.available() == 1);
 
    // Acxxlab element 4
-   REQUIRE(queue.try_enqueue(3));
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE(queue.full());
-   REQUIRE(queue.size() == 4);
-   REQUIRE(queue.available() == 0);
+   CHECK(queue.try_enqueue(3));
+   CHECK_FALSE(queue.empty());
+   CHECK(queue.full());
+   CHECK(queue.size() == 4);
+   CHECK(queue.available() == 0);
 
    // Queue is full.
-   REQUIRE_FALSE(queue.try_enqueue(4));
+   CHECK_FALSE(queue.try_enqueue(4));
 
    // Sizes did not change.
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE(queue.full());
-   REQUIRE(queue.size() == 4);
-   REQUIRE(queue.available() == 0);
+   CHECK_FALSE(queue.empty());
+   CHECK(queue.full());
+   CHECK(queue.size() == 4);
+   CHECK(queue.available() == 0);
 
    // Dequeue
 
    // Dequeue element 1
-   REQUIRE(queue.try_dequeue(result));
-   REQUIRE(result == 0);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 3);
-   REQUIRE(queue.available() == 1);
+   CHECK(queue.try_dequeue(result));
+   CHECK(result == 0);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 3);
+   CHECK(queue.available() == 1);
 
    // Dequeue element 2
-   REQUIRE(queue.try_dequeue(result));
-   REQUIRE(result == 1);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 2);
-   REQUIRE(queue.available() == 2);
+   CHECK(queue.try_dequeue(result));
+   CHECK(result == 1);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 2);
+   CHECK(queue.available() == 2);
 
    // Dequeue element 3
-   REQUIRE(queue.try_dequeue(result));
-   REQUIRE(result == 2);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 1);
-   REQUIRE(queue.available() == 3);
+   CHECK(queue.try_dequeue(result));
+   CHECK(result == 2);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 1);
+   CHECK(queue.available() == 3);
 
    // Dequeue element 4
-   REQUIRE(queue.try_dequeue(result));
-   REQUIRE(result == 3);
-   REQUIRE(queue.empty());
-   REQUIRE_FALSE(queue.full());
-   REQUIRE(queue.size() == 0);
-   REQUIRE(queue.available() == 4);
+   CHECK(queue.try_dequeue(result));
+   CHECK(result == 3);
+   CHECK(queue.empty());
+   CHECK_FALSE(queue.full());
+   CHECK(queue.size() == 0);
+   CHECK(queue.available() == 4);
 
    // Empty, cannot dequeue anymore.
-   REQUIRE_FALSE(queue.try_dequeue());
+   CHECK_FALSE(queue.try_dequeue());
 }
 
 TEST_CASE(
@@ -124,48 +124,48 @@ TEST_CASE(
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
 
-   REQUIRE(queue.capacity() == 4);
+   CHECK(queue.capacity() == 4);
 
-   REQUIRE_FALSE(queue.try_dequeue());
-   REQUIRE(queue.try_enqueue(10));
-   REQUIRE(queue.try_enqueue(11));
-   REQUIRE(queue.try_enqueue(12));
-   REQUIRE(queue.try_enqueue(13));
-   REQUIRE_FALSE(queue.try_enqueue(14));
-   REQUIRE(queue.size() == 4);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE(queue.full());
+   CHECK_FALSE(queue.try_dequeue());
+   CHECK(queue.try_enqueue(10));
+   CHECK(queue.try_enqueue(11));
+   CHECK(queue.try_enqueue(12));
+   CHECK(queue.try_enqueue(13));
+   CHECK_FALSE(queue.try_enqueue(14));
+   CHECK(queue.size() == 4);
+   CHECK_FALSE(queue.empty());
+   CHECK(queue.full());
 
    auto val = queue.try_dequeue();
    REQUIRE(val);
-   REQUIRE(val == 10);
-   REQUIRE(queue.size() == 3);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
+   CHECK(val == 10);
+   CHECK(queue.size() == 3);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
 
    val = queue.try_dequeue();
    REQUIRE(val);
-   REQUIRE(val == 11);
-   REQUIRE(queue.size() == 2);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
+   CHECK(val == 11);
+   CHECK(queue.size() == 2);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
 
    val = queue.try_dequeue();
    REQUIRE(val);
-   REQUIRE(val == 12);
-   REQUIRE(queue.size() == 1);
-   REQUIRE_FALSE(queue.empty());
-   REQUIRE_FALSE(queue.full());
+   CHECK(val == 12);
+   CHECK(queue.size() == 1);
+   CHECK_FALSE(queue.empty());
+   CHECK_FALSE(queue.full());
 
    val = queue.try_dequeue();
    REQUIRE(val);
-   REQUIRE(val == 13);
-   REQUIRE(queue.size() == 0);
-   REQUIRE(queue.empty());
-   REQUIRE_FALSE(queue.full());
+   CHECK(val == 13);
+   CHECK(queue.size() == 0);
+   CHECK(queue.empty());
+   CHECK_FALSE(queue.full());
 
    val = queue.try_dequeue();
-   REQUIRE_FALSE(val);
+   CHECK_FALSE(val);
 }
 
 TEST_CASE(
@@ -206,7 +206,7 @@ TEST_CASE(
    producer.join();
    consumer.join();
 
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE(
@@ -242,7 +242,7 @@ TEST_CASE(
    producer.join();
    consumer.join();
 
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE(
@@ -254,15 +254,15 @@ TEST_CASE(
 
    queue.try_enqueue("ten");
    queue.try_enqueue("twenty");
-   REQUIRE(queue.full());
+   CHECK(queue.full());
 
    SECTION("try_emplace_for times out")
    {
       auto start = std::chrono::steady_clock::now();
       auto success = queue.try_emplace_for(timeout, "thirty");
 
-      REQUIRE(not success);
-      REQUIRE(std::chrono::steady_clock::now() >= (timeout + start));
+      CHECK(not success);
+      CHECK(std::chrono::steady_clock::now() >= (timeout + start));
    }
 
    SECTION("try_emplace_until times out")
@@ -270,8 +270,8 @@ TEST_CASE(
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto success = queue.try_emplace_until(deadline, "thirty");
 
-      REQUIRE(not success);
-      REQUIRE(std::chrono::steady_clock::now() >= deadline);
+      CHECK(not success);
+      CHECK(std::chrono::steady_clock::now() >= deadline);
    }
 }
 
@@ -283,20 +283,20 @@ TEST_CASE(
    queue.try_emplace("ten");
    queue.try_emplace("twenty");
 
-   auto producer = std::jthread([&queue]() { REQUIRE(queue.try_emplace_for(1s, "thirty")); });
+   auto producer = std::jthread([&queue]() { CHECK(queue.try_emplace_for(1s, "thirty")); });
 
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "ten");
+   CHECK(elem == "ten");
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "twenty");
+   CHECK(elem == "twenty");
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "thirty");
+   CHECK(elem == "thirty");
 }
 
 TEST_CASE(
@@ -309,20 +309,20 @@ TEST_CASE(
 
    auto producer = std::jthread(
       [&queue]()
-      { REQUIRE(queue.try_emplace_until(std::chrono::steady_clock::now() + 1s, "thirty")); });
+      { CHECK(queue.try_emplace_until(std::chrono::steady_clock::now() + 1s, "thirty")); });
 
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "ten");
+   CHECK(elem == "ten");
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "twenty");
+   CHECK(elem == "twenty");
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == "thirty");
+   CHECK(elem == "thirty");
 }
 
 TEST_CASE(
@@ -334,15 +334,15 @@ TEST_CASE(
 
    queue.try_enqueue(10);
    queue.try_enqueue(20);
-   REQUIRE(queue.full());
+   CHECK(queue.full());
 
    SECTION("try_enqueue_for times out")
    {
       auto start = std::chrono::steady_clock::now();
       auto success = queue.try_enqueue_for(timeout, 30);
 
-      REQUIRE(not success);
-      REQUIRE(std::chrono::steady_clock::now() >= (timeout + start));
+      CHECK(not success);
+      CHECK(std::chrono::steady_clock::now() >= (timeout + start));
    }
 
    SECTION("try_enqueue_until times out")
@@ -350,8 +350,8 @@ TEST_CASE(
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto success = queue.try_enqueue_until(deadline, 30);
 
-      REQUIRE(not success);
-      REQUIRE(std::chrono::steady_clock::now() >= deadline);
+      CHECK(not success);
+      CHECK(std::chrono::steady_clock::now() >= deadline);
    }
 }
 
@@ -368,15 +368,15 @@ TEST_CASE(
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 10);
+   CHECK(elem == 10);
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 20);
+   CHECK(elem == 20);
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 30);
+   CHECK(elem == 30);
 }
 
 TEST_CASE(
@@ -393,15 +393,15 @@ TEST_CASE(
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 10);
+   CHECK(elem == 10);
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 20);
+   CHECK(elem == 20);
 
    elem = queue.try_dequeue_for(1s);
    REQUIRE(elem);
-   REQUIRE(elem == 30);
+   CHECK(elem == 30);
 }
 
 TEST_CASE(
@@ -416,8 +416,8 @@ TEST_CASE(
       auto start = std::chrono::steady_clock::now();
       auto elem = queue.try_dequeue_for(timeout);
 
-      REQUIRE_FALSE(elem.has_value());
-      REQUIRE(std::chrono::steady_clock::now() >= (timeout + start));
+      CHECK_FALSE(elem.has_value());
+      CHECK(std::chrono::steady_clock::now() >= (timeout + start));
    }
 
    SECTION("out param return value")
@@ -426,8 +426,8 @@ TEST_CASE(
       auto start = std::chrono::steady_clock::now();
       auto result = int{0};
 
-      REQUIRE_FALSE(queue.try_dequeue_for(timeout, result));
-      REQUIRE(std::chrono::steady_clock::now() >= (timeout + start));
+      CHECK_FALSE(queue.try_dequeue_for(timeout, result));
+      CHECK(std::chrono::steady_clock::now() >= (timeout + start));
    }
 }
 
@@ -443,8 +443,8 @@ TEST_CASE(
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto elem = queue.try_dequeue_until(deadline);
 
-      REQUIRE_FALSE(elem.has_value());
-      REQUIRE(std::chrono::steady_clock::now() >= deadline);
+      CHECK_FALSE(elem.has_value());
+      CHECK(std::chrono::steady_clock::now() >= deadline);
    }
 
    SECTION("out param return value")
@@ -453,8 +453,8 @@ TEST_CASE(
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto result = int{0};
 
-      REQUIRE_FALSE(queue.try_dequeue_until(deadline, result));
-      REQUIRE(std::chrono::steady_clock::now() >= deadline);
+      CHECK_FALSE(queue.try_dequeue_until(deadline, result));
+      CHECK(std::chrono::steady_clock::now() >= deadline);
    }
 }
 
@@ -469,12 +469,12 @@ TEST_CASE(
          [&queue]()
          {
             std::this_thread::sleep_for(10ms);
-            REQUIRE(queue.try_enqueue(11235));
+            CHECK(queue.try_enqueue(11235));
          });
 
       auto elem = queue.try_dequeue_for(1s);
       REQUIRE(elem);
-      REQUIRE(elem == 11235);
+      CHECK(elem == 11235);
    }
 
    SECTION("out param return value")
@@ -485,11 +485,11 @@ TEST_CASE(
          [&queue]()
          {
             std::this_thread::sleep_for(10ms);
-            REQUIRE(queue.try_enqueue(11235));
+            CHECK(queue.try_enqueue(11235));
          });
 
-      REQUIRE(queue.try_dequeue_for(1s, result));
-      REQUIRE(result == 11235);
+      CHECK(queue.try_dequeue_for(1s, result));
+      CHECK(result == 11235);
    }
 }
 
@@ -504,12 +504,12 @@ TEST_CASE(
          [&queue]()
          {
             std::this_thread::sleep_for(10ms);
-            REQUIRE(queue.try_enqueue(11235));
+            CHECK(queue.try_enqueue(11235));
          });
 
       auto elem = queue.try_dequeue_until(std::chrono::steady_clock::now() + 1s);
       REQUIRE(elem);
-      REQUIRE(elem == 11235);
+      CHECK(elem == 11235);
    }
 
    SECTION("out param return value")
@@ -520,10 +520,10 @@ TEST_CASE(
          [&queue]()
          {
             std::this_thread::sleep_for(10ms);
-            REQUIRE(queue.try_enqueue(11235));
+            CHECK(queue.try_enqueue(11235));
          });
 
-      REQUIRE(queue.try_dequeue_until(std::chrono::steady_clock::now() + 1s, result));
-      REQUIRE(result == 11235);
+      CHECK(queue.try_dequeue_until(std::chrono::steady_clock::now() + 1s, result));
+      CHECK(result == 11235);
    }
 }

@@ -24,7 +24,7 @@ TEST_CASE("pipes: copy to filter adaptor", "[pipes][adaptor]")
    auto expected = {0, 2, 4, 6, 8};
 
    std::ranges::copy(input, cxxlab::pipes::filter(evens) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to transform adaptor", "[pipes][adaptor]")
@@ -35,7 +35,7 @@ TEST_CASE("pipes: copy to transform adaptor", "[pipes][adaptor]")
    auto expected = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
 
    std::ranges::copy(input, cxxlab::pipes::transform(square) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to stride adaptor", "[pipes][adaptor]")
@@ -45,7 +45,7 @@ TEST_CASE("pipes: copy to stride adaptor", "[pipes][adaptor]")
    auto expected = {0, 3, 6, 9};
 
    std::ranges::copy(input, cxxlab::pipes::stride(3) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to drop adaptor", "[pipes][adaptor]")
@@ -55,7 +55,7 @@ TEST_CASE("pipes: copy to drop adaptor", "[pipes][adaptor]")
    auto expected = {3, 4, 5, 6, 7, 8, 9};
 
    std::ranges::copy(input, cxxlab::pipes::drop(3) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to take adaptor", "[pipes][adaptor]")
@@ -65,7 +65,7 @@ TEST_CASE("pipes: copy to take adaptor", "[pipes][adaptor]")
    auto expected = {0, 1, 2};
 
    std::ranges::copy(input, cxxlab::pipes::take(3) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to drop_while adaptor", "[pipes][adaptor]")
@@ -76,7 +76,7 @@ TEST_CASE("pipes: copy to drop_while adaptor", "[pipes][adaptor]")
    auto expected = {5, 6, 7, 8, 9};
 
    std::ranges::copy(input, cxxlab::pipes::drop_while(less_than_5) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to take_while adaptor", "[pipes][adaptor]")
@@ -87,7 +87,7 @@ TEST_CASE("pipes: copy to take_while adaptor", "[pipes][adaptor]")
    auto expected = {0, 1, 2, 3, 4};
 
    std::ranges::copy(input, cxxlab::pipes::take_while(less_than_5) | std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
 
 TEST_CASE("pipes: copy to null iterator compiles", "[pipes][adaptor]")
@@ -109,5 +109,5 @@ TEST_CASE("pipes: copy to many chained adaptors", "[pipes][adaptor]")
       input, cxxlab::pipes::stride(3) | cxxlab::pipes::transform(square) | cxxlab::pipes::drop(2) |
                 cxxlab::pipes::take(20) | cxxlab::pipes::filter(evens) |
                 std::back_inserter(result));
-   REQUIRE(std::ranges::equal(result, expected));
+   CHECK(std::ranges::equal(result, expected));
 }
