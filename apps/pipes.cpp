@@ -23,8 +23,9 @@ int main()
       auto input = std::views::iota(0, 100);
       auto result = std::vector<int>{};
       std::ranges::copy(
-         input, cxxlab::pipes::stride(3) | cxxlab::pipes::transform(square) | cxxlab::pipes::drop(2) |
-                   cxxlab::pipes::take(20) | cxxlab::pipes::filter(evens) | std::back_inserter(result));
+         input, cxxlab::pipes::stride(3) | cxxlab::pipes::transform(square) |
+                   cxxlab::pipes::drop(2) | cxxlab::pipes::take(20) | cxxlab::pipes::filter(evens) |
+                   std::back_inserter(result));
       std::print("RESULT : ");
       for (const auto elem : result)
       {
@@ -39,8 +40,8 @@ int main()
       auto input = std::views::iota(0, 100);
       auto result = std::vector<int>{};
       std::ranges::copy(
-         input,
-         cxxlab::pipes::take_while(less_than_50) | cxxlab::pipes::stride(3) | std::back_inserter(result));
+         input, cxxlab::pipes::take_while(less_than_50) | cxxlab::pipes::stride(3) |
+                   std::back_inserter(result));
       std::print("RESULT : ");
       for (const auto elem : result)
       {
@@ -49,8 +50,6 @@ int main()
    }
 
    std::println();
-
-   // func(cxxlab::pipes::filter_output_iterator{std::back_inserter(result), evens}, 1);
 
    return 0;
 }

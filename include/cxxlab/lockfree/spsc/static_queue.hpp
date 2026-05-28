@@ -198,7 +198,8 @@ class static_queue
       }
 
       std::ranges::for_each(
-         range, [&](auto&& elem) { emplace_at(tail++, std::forward<decltype(elem)>(elem)); });
+         std::forward<R>(range),
+         [&](auto&& elem) { emplace_at(tail++, std::forward<decltype(elem)>(elem)); });
 
       tail_.store(tail, std::memory_order_release);
       return true;
