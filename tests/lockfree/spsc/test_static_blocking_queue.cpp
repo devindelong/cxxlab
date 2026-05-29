@@ -23,10 +23,10 @@ using namespace std::chrono_literals;
 TEST_CASE("spsc::static_blocking_queue: capacity is power of 2", "[spsc][blocking_queue][capacity]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 7>{};
-   REQUIRE(queue.capacity() == 8);
+   STATIC_CHECK(queue.capacity() == 8);
 
    auto queue2 = cxxlab::spsc::static_blocking_queue<int, 8>{};
-   REQUIRE(queue2.capacity() == 8);
+   STATIC_CHECK(queue2.capacity() == 8);
 }
 
 TEST_CASE("spsc::static_blocking_queue: correct size tracking", "[spsc][blocking_queue][size]")
@@ -363,7 +363,7 @@ TEST_CASE(
    queue.try_enqueue(10);
    queue.try_enqueue(20);
 
-   auto producer = std::jthread([&queue]() { REQUIRE(queue.try_enqueue_for(1s, 30)); });
+   auto producer = std::jthread([&queue]() { CHECK(queue.try_enqueue_for(1s, 30)); });
 
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
@@ -388,7 +388,7 @@ TEST_CASE(
    queue.try_enqueue(20);
 
    auto producer = std::jthread(
-      [&queue]() { REQUIRE(queue.try_enqueue_until(std::chrono::steady_clock::now() + 1s, 30)); });
+      [&queue]() { CHECK(queue.try_enqueue_until(std::chrono::steady_clock::now() + 1s, 30)); });
 
    std::this_thread::sleep_for(10ms);
    auto elem = queue.try_dequeue_for(1s);
