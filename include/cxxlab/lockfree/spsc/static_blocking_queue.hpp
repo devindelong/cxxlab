@@ -324,7 +324,7 @@ class static_blocking_queue
    try_acquire_until_(semaphore_type& sem, std::chrono::time_point<Clock, Duration> time_point)
       -> bool
    {
-      // Protect against spurious failures in counting_semaphore::try_acquire_until.
+      // Protect against spurious failures in counting_semaphore.
       do
       {
          if (sem.try_acquire_until(time_point))

@@ -27,7 +27,7 @@ namespace cxxlab::spsc
 {
 
 /**
- * @brief Statically sized Single-Consumer-Single-Producer queue.
+ * @brief Statically-sized Single-Consumer-Single-Producer queue.
  * @tparam T Element type.
  * @tparam Capacity Maximum number of elements can store.
  * @details The actual capacity used will be a power of 2 large enough to hold the specified
@@ -54,6 +54,7 @@ class static_queue
    /**
     * @brief Checks if the queue is empty.
     * @return True if empty, false otherwise.
+    * @note Due to the nature of concurrency, this is an approximate value.
     */
    [[nodiscard]] auto empty() const noexcept -> bool
    {
@@ -63,6 +64,7 @@ class static_queue
    /**
     * @brief Gets the approximate size of the queue.
     * @return The capacity.
+    * @note Due to the nature of concurrency, this is an approximate value.
     */
    [[nodiscard]] auto size() const noexcept -> std::size_t
    {
@@ -72,6 +74,7 @@ class static_queue
    /**
     * @brief Checks if the queue is full.
     * @return True if full, false otherwise.
+    * @note Due to the nature of concurrency, this is an approximate value.
     */
    [[nodiscard]] auto full() const noexcept -> bool
    {
@@ -80,7 +83,8 @@ class static_queue
 
    /**
     * @brief Gets the approximate number of available slots in the queue.
-    * @return The number of available slots: capacity() - size().
+    * @return The number of available slots is given by capacity() - size().
+    * @note Due to the nature of concurrency, this is an approximate value.
     */
    [[nodiscard]] auto available() const noexcept -> std::size_t
    {
@@ -89,9 +93,9 @@ class static_queue
    }
 
    /**
-    * @brief Emplace an element into the queue.
+    * @brief Tries to emplace an element into the queue.
     * @param args Arguments for the constructor of the element.
-    * @return True if emplace was successful, false otherwise (the queue was full).
+    * @return True if emplace was successful, and the queue was not full, false otherwise.
     */
    template <typename... Args>
    auto try_emplace(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>) -> bool
@@ -113,9 +117,9 @@ class static_queue
    }
 
    /**
-    * @brief Enqueue an exisitng element into the queue.
+    * @brief Tries to enqueue an exisitng element into the queue.
     * @param elem The element to enqueue.
-    * @return True if enqueue was successful, false otherwise (the queue was full).
+    * @return True if enqueue was successful, and the queue was not full, false otherwise.
     */
    template <typename E>
    auto try_enqueue(E&& elem) noexcept(std::is_nothrow_constructible_v<T>) -> bool
@@ -125,7 +129,7 @@ class static_queue
    }
 
    /**
-    * @brief Dequeues an element off the queue.
+    * @brief Tries to dequeue an element off the queue.
     * @return If the queue is not empty, an optional containing the deququed element,
     * otherwise std::nullupt.
     */
@@ -176,9 +180,13 @@ class static_queue
    }
 
    /**
-    * @brief Enqueues a range of elements into the queue.
+    * @brief Tries to enqueue a range of elements into the queue.
+    *
+    * This only enqueues the elements of the range if there is enough space in the queue for all of
+    * them. If there isn't enough space, this resturns false and leaves the range unchanged.
+    *
     * @param range A range of elements to enqueue.
-    * @return The number of elements that were successfully enqueued into the queue.
+    * @return True if the entire rnage was enqueued, false otherwise.
     */
    template <std::ranges::input_range R>
    auto try_enqueue_bulk(R&& range) -> bool
@@ -206,7 +214,12 @@ class static_queue
    }
 
    /**
-    * @brief Dequeues a number of elements from the queue.
+    * @brief Tries to dequeue a number of elements from the queue.
+    *
+    * Tries to dequeue a number of elements from the queue. If there are fewer in the queue than
+    * requested, this will dequeue however many elements are in the queue up to the number
+    * requested. This returns the number of elements dequeued.
+    *
     * @param out Output iterator to write to.
     * @param num_elements Number of elements to dequeue.
     * @return The number of elements that were dequeued.
