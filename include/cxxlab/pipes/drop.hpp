@@ -28,8 +28,8 @@ class drop_iterator : public iterator_interface<Iterator>
  public:
    constexpr drop_iterator() = default;
 
-   constexpr drop_iterator(Iterator iter, Integral count)
-       : iterator_interface<Iterator>{std::move(iter)}, count_{count}
+   constexpr drop_iterator(Iterator&& iter, Integral count)
+       : iterator_interface<Iterator>{std::forward<Iterator>(iter)}, count_{count}
    {
    }
 
@@ -46,8 +46,8 @@ class drop_iterator : public iterator_interface<Iterator>
       }
    }
 
-   constexpr auto count() const noexcept -> auto { return count_; }
-   constexpr auto dropped() const noexcept -> auto { return dropped_; }
+   constexpr auto count() const noexcept -> Integral { return count_; }
+   constexpr auto dropped() const noexcept -> Integral { return dropped_; }
 
  private:
    Integral count_{0};

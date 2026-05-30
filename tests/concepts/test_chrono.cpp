@@ -21,7 +21,7 @@ using custom_time_point = std::chrono::time_point<std::chrono::system_clock, cus
 // chrono_duration
 // ---------------------------------------------------------------------------
 
-TEST_CASE("chrono_duration: positive cases", "[concepts][chrono_duration]")
+TEST_CASE("chrono_duration - positive cases", "[concepts][chrono_duration]")
 {
    STATIC_CHECK(cxxlab::chrono_duration<std::chrono::nanoseconds>);
    STATIC_CHECK(cxxlab::chrono_duration<std::chrono::milliseconds>);
@@ -31,7 +31,7 @@ TEST_CASE("chrono_duration: positive cases", "[concepts][chrono_duration]")
    STATIC_CHECK(cxxlab::chrono_duration<custom_duration>);
 }
 
-TEST_CASE("chrono_duration: cvref-qualified types are accepted", "[concepts][chrono_duration]")
+TEST_CASE("chrono_duration - cvref-qualified types are accepted", "[concepts][chrono_duration]")
 {
    STATIC_CHECK(cxxlab::chrono_duration<const std::chrono::nanoseconds>);
    STATIC_CHECK(cxxlab::chrono_duration<volatile std::chrono::nanoseconds>);
@@ -41,7 +41,7 @@ TEST_CASE("chrono_duration: cvref-qualified types are accepted", "[concepts][chr
    STATIC_CHECK(cxxlab::chrono_duration<std::chrono::nanoseconds&&>);
 }
 
-TEST_CASE("chrono_duration: negative cases", "[concepts][chrono_duration]")
+TEST_CASE("chrono_duration - negative cases", "[concepts][chrono_duration]")
 {
    STATIC_CHECK_FALSE(cxxlab::chrono_duration<int>);
    STATIC_CHECK_FALSE(cxxlab::chrono_duration<double>);
@@ -57,7 +57,7 @@ TEST_CASE("chrono_duration: negative cases", "[concepts][chrono_duration]")
 // chrono_time_point
 // ---------------------------------------------------------------------------
 
-TEST_CASE("chrono_time_point: positive cases", "[concepts][chrono_time_point]")
+TEST_CASE("chrono_time_point - positive cases", "[concepts][chrono_time_point]")
 {
    STATIC_CHECK(cxxlab::chrono_time_point<std::chrono::system_clock::time_point>);
    STATIC_CHECK(cxxlab::chrono_time_point<std::chrono::steady_clock::time_point>);
@@ -67,7 +67,7 @@ TEST_CASE("chrono_time_point: positive cases", "[concepts][chrono_time_point]")
          std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>>);
 }
 
-TEST_CASE("chrono_time_point: cvref-qualified types are accepted", "[concepts][chrono_time_point]")
+TEST_CASE("chrono_time_point - cvref-qualified types are accepted", "[concepts][chrono_time_point]")
 {
    STATIC_CHECK(cxxlab::chrono_time_point<const std::chrono::system_clock::time_point>);
    STATIC_CHECK(cxxlab::chrono_time_point<volatile std::chrono::system_clock::time_point>);
@@ -77,7 +77,7 @@ TEST_CASE("chrono_time_point: cvref-qualified types are accepted", "[concepts][c
    STATIC_CHECK(cxxlab::chrono_time_point<std::chrono::system_clock::time_point&&>);
 }
 
-TEST_CASE("chrono_time_point: negative cases", "[concepts][chrono_time_point]")
+TEST_CASE("chrono_time_point - negative cases", "[concepts][chrono_time_point]")
 {
    STATIC_CHECK_FALSE(cxxlab::chrono_time_point<int>);
    STATIC_CHECK_FALSE(cxxlab::chrono_time_point<double>);

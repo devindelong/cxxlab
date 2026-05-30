@@ -17,7 +17,7 @@
 #include <thread>
 #include <vector>
 
-TEST_CASE("spsc::static_queue: capacity is power of 2", "[spsc][queue][capacity]")
+TEST_CASE("spsc::static_queue - capacity is power of 2", "[spsc][queue][capacity]")
 {
    auto queue = cxxlab::spsc::static_queue<int, 7>{};
    STATIC_CHECK(queue.capacity() == 8);
@@ -26,7 +26,7 @@ TEST_CASE("spsc::static_queue: capacity is power of 2", "[spsc][queue][capacity]
    STATIC_CHECK(queue2.capacity() == 8);
 }
 
-TEST_CASE("spsc::static_queue: correct size tracking", "[spsc][queue][size]")
+TEST_CASE("spsc::static_queue - correct size tracking", "[spsc][queue][size]")
 {
    auto queue = cxxlab::spsc::static_queue<int, 4>{};
    auto result = 0;
@@ -115,7 +115,7 @@ TEST_CASE("spsc::static_queue: correct size tracking", "[spsc][queue][size]")
    CHECK_FALSE(queue.try_dequeue());
 }
 
-TEST_CASE("spsc::static_queue: single thread try_enqueue and try_dequeue", "[spsc][queue]")
+TEST_CASE("spsc::static_queue - single thread try_enqueue and try_dequeue", "[spsc][queue]")
 {
    auto queue = cxxlab::spsc::static_queue<int, 4>{};
 
@@ -161,7 +161,7 @@ TEST_CASE("spsc::static_queue: single thread try_enqueue and try_dequeue", "[sps
    CHECK_FALSE(val);
 }
 
-TEST_CASE("spsc::static_queue: single-threaded try_enqueue_bulk", "[spsc][queue]")
+TEST_CASE("spsc::static_queue - single-threaded try_enqueue_bulk", "[spsc][queue]")
 {
    auto queue = cxxlab::spsc::static_queue<int, 4>{};
 
@@ -175,7 +175,7 @@ TEST_CASE("spsc::static_queue: single-threaded try_enqueue_bulk", "[spsc][queue]
    CHECK_FALSE(queue.try_enqueue_bulk(std::views::iota(10, 15)));
 }
 
-TEST_CASE("spsc::static_queue: single-threaded try_dequeue_bulk", "[spsc][queue]")
+TEST_CASE("spsc::static_queue - single-threaded try_dequeue_bulk", "[spsc][queue]")
 {
    auto queue = cxxlab::spsc::static_queue<int, 4>{};
    auto elements = std::views::iota(10, 14);
@@ -191,7 +191,8 @@ TEST_CASE("spsc::static_queue: single-threaded try_dequeue_bulk", "[spsc][queue]
    CHECK(result[3] == 13);
 }
 
-TEST_CASE("spsc::static_queue: concurrent try_enqueue and try_dequeue", "[spsc][queue][concurrent]")
+TEST_CASE(
+   "spsc::static_queue - concurrent try_enqueue and try_dequeue", "[spsc][queue][concurrent]")
 {
    constexpr auto N = 1024;
    auto queue = cxxlab::spsc::static_queue<int, 4>{};
@@ -231,7 +232,7 @@ TEST_CASE("spsc::static_queue: concurrent try_enqueue and try_dequeue", "[spsc][
 }
 
 TEST_CASE(
-   "spsc::static_queue: concurrent try_enqueue_bulk and try_dequeue_bulk",
+   "spsc::static_queue - concurrent try_enqueue_bulk and try_dequeue_bulk",
    "[spsc][queue][concurrent]")
 {
    constexpr auto BULK_SIZE = 8;
