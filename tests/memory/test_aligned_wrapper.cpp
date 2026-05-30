@@ -13,7 +13,7 @@
 
 #include <new>
 
-TEST_CASE("aligned_wrapper: alignment is correct", "[aligned_wrapper][alignof]")
+TEST_CASE("aligned_wrapper - alignment is correct", "[aligned_wrapper][alignof]")
 {
    STATIC_CHECK(alignof(cxxlab::aligned_wrapper<int, 64>) == 64);
    STATIC_CHECK(

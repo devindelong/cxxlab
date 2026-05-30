@@ -13,7 +13,7 @@
 
 #include <cstddef>
 
-TEST_CASE("functional: repeat", "[repeat]")
+TEST_CASE("functional - repeat", "[repeat]")
 {
    auto result = std::size_t{0};
    auto expected = std::size_t{10};

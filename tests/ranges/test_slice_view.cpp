@@ -15,7 +15,7 @@
 #include <array>
 #include <ranges>
 
-TEST_CASE("slice_view: basic slicing and size", "[ranges][slice_view][constexpr]")
+TEST_CASE("slice_view - basic slicing and size", "[ranges][slice_view][constexpr]")
 {
    constexpr static auto v = std::array{10, 11, 12, 13, 14};
 
@@ -28,7 +28,7 @@ TEST_CASE("slice_view: basic slicing and size", "[ranges][slice_view][constexpr]
 }
 
 TEST_CASE(
-   "slice_view: range adaptor (cxxlab::views::slice) works", "[ranges][slice_view][constexpr]")
+   "slice_view - range adaptor (cxxlab::views::slice) works", "[ranges][slice_view][constexpr]")
 {
    constexpr static auto v = std::array{0, 1, 2, 3, 4, 5};
 
@@ -42,7 +42,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "slice_view: mutation through non-const view updates underlying container",
+   "slice_view - mutation through non-const view updates underlying container",
    "[ranges][slice_view][mutation]")
 {
    auto v = std::array{1, 2, 3, 4, 5};
@@ -54,7 +54,7 @@ TEST_CASE(
    CHECK(v == expected);
 }
 
-TEST_CASE("slice_view: const correctness (view over const range)", "[ranges][slice_view][const]")
+TEST_CASE("slice_view - const correctness (view over const range)", "[ranges][slice_view][const]")
 {
    const auto v = std::array{5, 6, 7, 8};
    auto csv = v | cxxlab::views::slice(1, 3);
@@ -65,7 +65,7 @@ TEST_CASE("slice_view: const correctness (view over const range)", "[ranges][sli
 }
 
 TEST_CASE(
-   "slice_view: base() returns underlying view that equals the original container view",
+   "slice_view - base() returns underlying view that equals the original container view",
    "[ranges][slice_view][base]")
 {
    auto v = std::array{1, 2, 3, 4, 5};
@@ -77,7 +77,7 @@ TEST_CASE(
    CHECK(std::ranges::equal(base_view, v));
 }
 
-TEST_CASE("slice_view: check upper index bound is clamped", "[ranges][slice_view][bounds]")
+TEST_CASE("slice_view - check upper index bound is clamped", "[ranges][slice_view][bounds]")
 {
    auto v = std::array{10, 11, 12, 13, 14};
 
@@ -89,7 +89,7 @@ TEST_CASE("slice_view: check upper index bound is clamped", "[ranges][slice_view
 }
 
 TEST_CASE(
-   "slice_view: check upper and lower index bounds are clamped", "[ranges][slice_view][bounds]")
+   "slice_view - check upper and lower index bounds are clamped", "[ranges][slice_view][bounds]")
 {
    auto v = std::array{10, 11, 12, 13, 14};
    auto sv = cxxlab::ranges::slice_view{v, 10, 10};

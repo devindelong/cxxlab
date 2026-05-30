@@ -28,20 +28,20 @@ struct conditional_storage_pair
 } // namespace
 
 TEST_CASE(
-   "conditional_storage_t: check conditional sizeof", "[type_traits][conditional_storage][sizeof]")
+   "conditional_storage_t - check conditional sizeof", "[type_traits][conditional_storage][sizeof]")
 {
    STATIC_CHECK(sizeof(cxxlab::conditional_storage_t<true, int>) == sizeof(int));
    STATIC_CHECK(std::is_empty_v<cxxlab::conditional_storage_t<false, int>>);
 }
 
-TEST_CASE("conditional_storage_t: empty type uniqueness", "[sizeof]")
+TEST_CASE("conditional_storage_t - empty type uniqueness", "[sizeof]")
 {
    STATIC_CHECK(std::is_empty_v<conditional_storage_pair<false>>);
    STATIC_CHECK(sizeof(conditional_storage_pair<true>) == 2 * sizeof(int));
 }
 
 TEST_CASE(
-   "conditional_storage_t: initializer list construction",
+   "conditional_storage_t - initializer list construction",
    "[type_traits][conditional_storage][constructor]")
 {
    using container = std::vector<int>;
@@ -55,7 +55,8 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "conditional_storage_t: variadic constructor", "[type_traits][conditional_storage][constructor]")
+   "conditional_storage_t - variadic constructor",
+   "[type_traits][conditional_storage][constructor]")
 {
    using container = std::tuple<int, int, int>;
 

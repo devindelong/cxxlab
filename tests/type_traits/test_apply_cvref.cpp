@@ -15,7 +15,7 @@
 
 // const
 
-TEST_CASE("type_traits: apply_const", "[type_traits][apply_const]")
+TEST_CASE("type_traits - apply_const", "[type_traits][apply_const]")
 {
    STATIC_CHECK(std::same_as<cxxlab::apply_const_t<int, int>, int>);
    STATIC_CHECK(std::same_as<cxxlab::apply_const_t<const int, int>, const int>);
@@ -24,7 +24,7 @@ TEST_CASE("type_traits: apply_const", "[type_traits][apply_const]")
 
 // volatile
 
-TEST_CASE("type_traits: apply_volatile", "[type_traits][apply_volatile]")
+TEST_CASE("type_traits - apply_volatile", "[type_traits][apply_volatile]")
 {
    STATIC_CHECK(std::same_as<cxxlab::apply_volatile_t<int, int>, int>);
    STATIC_CHECK(std::same_as<cxxlab::apply_volatile_t<volatile int, int>, volatile int>);
@@ -33,7 +33,7 @@ TEST_CASE("type_traits: apply_volatile", "[type_traits][apply_volatile]")
 
 // cv
 
-TEST_CASE("type_traits: apply_cv", "[type_traits][apply_cv]")
+TEST_CASE("type_traits - apply_cv", "[type_traits][apply_cv]")
 {
    STATIC_CHECK(std::same_as<cxxlab::apply_cv_t<int, int>, int>);
    // const only
@@ -51,7 +51,7 @@ TEST_CASE("type_traits: apply_cv", "[type_traits][apply_cv]")
 
 // reference
 
-TEST_CASE("type_traits: apply_reference", "[type_traits][apply_reference]")
+TEST_CASE("type_traits - apply_reference", "[type_traits][apply_reference]")
 {
    STATIC_CHECK(std::same_as<cxxlab::apply_reference_t<int, int>, int>);
    STATIC_CHECK(std::same_as<cxxlab::apply_reference_t<int&, int>, int&>);

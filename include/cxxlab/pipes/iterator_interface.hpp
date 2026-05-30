@@ -28,10 +28,6 @@ struct output_iterator_types
    using reference = std::add_lvalue_reference<ValueType>;
 };
 
-// -----------------------------------------------------------------------------
-// iterator_interface
-// -----------------------------------------------------------------------------
-
 template <typename Iterator>
 class iterator_interface : public output_iterator_types<void>
 {
@@ -115,7 +111,7 @@ class iterator_interface : public output_iterator_types<void>
    }
 
  private:
-   [[no_unique_address]] Iterator out_iter_{};
+   Iterator out_iter_{};
 };
 
 } // namespace cxxlab::pipes

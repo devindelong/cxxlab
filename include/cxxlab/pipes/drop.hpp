@@ -46,8 +46,8 @@ class drop_iterator : public iterator_interface<Iterator>
       }
    }
 
-   constexpr auto count() const noexcept -> auto { return count_; }
-   constexpr auto dropped() const noexcept -> auto { return dropped_; }
+   constexpr auto count() const noexcept -> Integral { return count_; }
+   constexpr auto dropped() const noexcept -> Integral { return dropped_; }
 
  private:
    Integral count_{0};

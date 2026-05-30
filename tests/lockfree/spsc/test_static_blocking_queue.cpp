@@ -20,7 +20,8 @@
 
 using namespace std::chrono_literals;
 
-TEST_CASE("spsc::static_blocking_queue: capacity is power of 2", "[spsc][blocking_queue][capacity]")
+TEST_CASE(
+   "spsc::static_blocking_queue - capacity is power of 2", "[spsc][blocking_queue][capacity]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 7>{};
    STATIC_CHECK(queue.capacity() == 8);
@@ -29,7 +30,7 @@ TEST_CASE("spsc::static_blocking_queue: capacity is power of 2", "[spsc][blockin
    STATIC_CHECK(queue2.capacity() == 8);
 }
 
-TEST_CASE("spsc::static_blocking_queue: correct size tracking", "[spsc][blocking_queue][size]")
+TEST_CASE("spsc::static_blocking_queue - correct size tracking", "[spsc][blocking_queue][size]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
    auto result = 0;
@@ -119,7 +120,7 @@ TEST_CASE("spsc::static_blocking_queue: correct size tracking", "[spsc][blocking
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: single-threaded try_enqueue and try_dequeue",
+   "spsc::static_blocking_queue - single-threaded try_enqueue and try_dequeue",
    "[spsc][blocking_queue]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
@@ -169,7 +170,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_enqueue and try_dequeue",
+   "spsc::static_blocking_queue - concurrent try_enqueue and try_dequeue",
    "[spsc][blocking_queue][concurrent]")
 {
    constexpr auto N = 1024;
@@ -210,7 +211,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent, blocking enqueue and dequeue",
+   "spsc::static_blocking_queue - concurrent, blocking enqueue and dequeue",
    "[spsc][blocking_queue][concurrent]")
 {
    constexpr auto N = 1024;
@@ -246,7 +247,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: single-threaded try_emplace_for/until times out",
+   "spsc::static_blocking_queue - single-threaded try_emplace_for/until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
@@ -276,7 +277,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_emplace_for unblocks and emplaces element",
+   "spsc::static_blocking_queue - concurrent try_emplace_for unblocks and emplaces element",
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
@@ -300,7 +301,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_emplace_until unblocks and emplaces element",
+   "spsc::static_blocking_queue - concurrent try_emplace_until unblocks and emplaces element",
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
@@ -326,7 +327,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: single-threaded try_enqueue_for/until times out",
+   "spsc::static_blocking_queue - single-threaded try_enqueue_for/until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
@@ -356,7 +357,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_enqueue_for unblocks and enqueues element",
+   "spsc::static_blocking_queue - concurrent try_enqueue_for unblocks and enqueues element",
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
@@ -380,7 +381,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_enqueue_until unblocks and enqueues element",
+   "spsc::static_blocking_queue - concurrent try_enqueue_until unblocks and enqueues element",
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
@@ -405,7 +406,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: single-threaded try_dequeue_for times out",
+   "spsc::static_blocking_queue - single-threaded try_dequeue_for times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
@@ -432,7 +433,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: single-threaded try_dequeue_until times out",
+   "spsc::static_blocking_queue - single-threaded try_dequeue_until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
@@ -459,7 +460,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_dequeue_for unblocks and dequeues element",
+   "spsc::static_blocking_queue - concurrent try_dequeue_for unblocks and dequeues element",
    "[spsc][blocking_queue][concurrent]")
 {
    SECTION("optional return value")
@@ -494,7 +495,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue: concurrent try_dequeue_until unblocks and dequeues element",
+   "spsc::static_blocking_queue - concurrent try_dequeue_until unblocks and dequeues element",
    "[spsc][blocking_queue][concurrent]")
 {
    SECTION("optional return value")
