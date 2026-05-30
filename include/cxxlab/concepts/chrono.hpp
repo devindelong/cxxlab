@@ -21,7 +21,7 @@ namespace detail
 
 /**
  * @brief Concept to check if a type is std::chrono::time_point.
- * @detail Private implementation where this fails if T ios cvref qualified.
+ * @detail Private implementation where this fails if T is cvref qualified.
  */
 template <typename T>
 concept chrono_time_point_impl = requires {
@@ -34,7 +34,7 @@ concept chrono_time_point_impl = requires {
 
 /**
  * @brief Concept to check if a type is std::chrono::duration.
- * @detail Private implementation where this fails if T ios cvref qualified.
+ * @detail Private implementation where this fails if T is cvref qualified.
  */
 template <typename T>
 concept chrono_duration_impl = requires {

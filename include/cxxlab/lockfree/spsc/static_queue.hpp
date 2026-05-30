@@ -117,7 +117,7 @@ class static_queue
    }
 
    /**
-    * @brief Tries to enqueue an exisitng element into the queue.
+    * @brief Tries to enqueue an existing element into the queue.
     * @param elem The element to enqueue.
     * @return True if enqueue was successful, and the queue was not full, false otherwise.
     */
@@ -130,8 +130,8 @@ class static_queue
 
    /**
     * @brief Tries to dequeue an element off the queue.
-    * @return If the queue is not empty, an optional containing the deququed element,
-    * otherwise std::nullupt.
+    * @return If the queue is not empty, an optional containing the dequeued element,
+    * otherwise std::nullopt.
     */
    [[nodiscard]]
    auto try_dequeue() noexcept(std::is_nothrow_move_constructible_v<T>) -> std::optional<T>
@@ -183,10 +183,10 @@ class static_queue
     * @brief Tries to enqueue a range of elements into the queue.
     *
     * This only enqueues the elements of the range if there is enough space in the queue for all of
-    * them. If there isn't enough space, this resturns false and leaves the range unchanged.
+    * them. If there isn't enough space, this return false and leaves the range unchanged.
     *
     * @param range A range of elements to enqueue.
-    * @return True if the entire rnage was enqueued, false otherwise.
+    * @return True if the entire range was enqueued, false otherwise.
     */
    template <std::ranges::input_range R>
    auto try_enqueue_bulk(R&& range) -> bool
@@ -260,7 +260,7 @@ class static_queue
    /**
     * @brief Emplaces an element at a specified tail index.
     * @param tail The tail index to emplace a new object.
-    * @param args The arguents to pass to the element's constructor.
+    * @param args The arguments to pass to the element's constructor.
     */
    template <typename... Args>
    auto emplace_at(std::size_t tail, Args&&... args) noexcept(
@@ -271,7 +271,7 @@ class static_queue
    }
 
    /**
-    * @brief Dequques an element at a specified head index.
+    * @brief Dequeues an element at a specified head index.
     * @param head The index of the element to dequeue.
     * @return The dequeued element.
     * @note This does not verify that an element actually exists at the head index.

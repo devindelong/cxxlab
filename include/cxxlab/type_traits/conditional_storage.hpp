@@ -33,7 +33,7 @@ struct empty_type
    constexpr empty_type(auto&&...) noexcept {}
 
    /**
-    * @brief Construct from initialzer list and variadic args.
+    * @brief Construct from initializer list and variadic args.
     */
    template <typename U>
    constexpr empty_type(std::initializer_list<U>, auto&&...) noexcept

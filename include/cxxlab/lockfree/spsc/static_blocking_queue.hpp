@@ -35,7 +35,7 @@ namespace cxxlab::spsc
  * capacity.
  *
  * @note There is a deadlock bug in std::counting_semaphore that might not be fixed until gcc-16:
- * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104928. It's possbile that it could be fixed in
+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104928. It's possible that it could be fixed in
  * gcc-15.2, but unsure of exactly which versions have the patch.
  */
 template <typename T, std::size_t Capacity>
@@ -101,7 +101,7 @@ class static_blocking_queue
    }
 
    /**
-    * @brief Tries to emplaces an element into the queue for a given time duration.
+    * @brief Tries to emplace an element into the queue for a given time duration.
     *
     * If the queue is full, then this will wait until the specified time duration has passed or a
     * slot in the queue has become available, whichever comes first.
@@ -246,7 +246,7 @@ class static_blocking_queue
     * @param timeout The time to wait for the dequeue to succeed.
     *
     * @return If the queue is not empty, an optional containing the dequeued element,
-    * otherwise std::nullupt.
+    * otherwise std::nullopt.
     */
    [[nodiscard]] auto try_dequeue_for(chrono_duration auto timeout) -> std::optional<T>
    {
@@ -286,7 +286,7 @@ class static_blocking_queue
    /**
     * @brief Dequeues an element off the queue and blocks while the queue is empty.
     * @return If the queue is not empty, an optional containing the dequeued element,
-    * otherwise std::nullupt.
+    * otherwise std::nullopt.
     */
    [[nodiscard]] auto dequeue() -> T
    {
@@ -436,7 +436,7 @@ class static_blocking_queue
     * @param time_point The absolute time to wait until for the dequeue to succeed.
     *
     * @return If the queue is not empty, an optional containing the dequeued element,
-    * otherwise std::nullupt.
+    * otherwise std::nullopt.
     */
    template <typename Time>
    [[nodiscard]] auto optional_try_dequeue_impl_(Time time_spec) -> std::optional<T>

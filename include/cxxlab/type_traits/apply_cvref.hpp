@@ -89,7 +89,7 @@ using apply_cv_t = apply_cv<From, To>::type;
 // --------------------------------------------------------------------------------
 
 /**
- * @brief Adds reference quaifiers from the type From to the type To.
+ * @brief Adds reference qualifiers from the type From to the type To.
  *
  * @tparam From The type to check for references.
  * @tparam To The type to add references to.
@@ -104,7 +104,7 @@ struct apply_reference
 };
 
 /**
- * @brief Adds top-level reference quaifiers from the type From to the type To.
+ * @brief Adds top-level reference qualifiers from the type From to the type To.
  *
  * @tparam From The type to check for references.
  * @tparam To The type to add references to.
