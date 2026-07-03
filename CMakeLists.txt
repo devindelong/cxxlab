@@ -39,8 +39,8 @@ set (CXXLAB_CMAKE_PATH           "${CXXLAB_ROOT_PATH}/cmake")
 # CxxLab library
 ################################################################################
 
-# Create a variable for C++ version to use.
-set (CXXLAB_CXX_VERSION cxx_std_23)
+# C++ version.
+set (CXXLAB_CXX_VERSION cxx_std_26)
 
 # Library name
 set (CXXLAB_LIBRARY ${CXXLAB_LIBRARY_NAME})
