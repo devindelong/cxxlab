@@ -59,9 +59,7 @@ class slice_view : public std::ranges::view_interface<slice_view<R>>
    constexpr slice_view(R base, difference_type start, difference_type end)
        : base_{std::move(base)}, start_index_{start}, end_index_{end}
    {
-      assert(start >= 0);
-      assert(end >= 0);
-      assert(end >= start);
+      assert(start >= 0 && end >= 0 && end >= start);
    }
 
    /**
@@ -78,26 +76,56 @@ class slice_view : public std::ranges::view_interface<slice_view<R>>
 
    /**
     * @brief Gets an iterator to the beginning of the slice view.
-    * @param self Explicit object parameter (deducing this)
     * @return Iterator to the beginning of the slice view.
     */
-   template <typename Self>
-   [[nodiscard]] constexpr auto begin(this Self&& self)
-      requires std::ranges::range<like_t<Self, R>>
+   [[nodiscard]] constexpr auto begin() const
+      requires std::ranges::range<const R>
    {
-      return self.next(self.begin_, self.start_index_);
+      return next_(start_index_);
    }
 
    /**
     * @brief Gets an iterator to the beginning of the slice view.
-    * @param self Explicit object parameter (deducing this)
     * @return Iterator to the beginning of the slice view.
     */
-   template <typename Self>
-   [[nodiscard]] constexpr auto end(this Self&& self)
-      requires std::ranges::range<like_t<Self, R>>
+   [[nodiscard]] constexpr auto begin()
+      requires std::ranges::range<R>
    {
-      return self.next(self.end_, self.end_index_);
+      if constexpr (cacheable_range<R>)
+      {
+         return cached_next_(begin_, start_index_);
+      }
+      else
+      {
+         return next_(start_index_);
+      }
+   }
+
+   /**
+    * @brief Gets an iterator to the end of the slice view.
+    * @return Iterator to the end of the slice view.
+    */
+   [[nodiscard]] constexpr auto end() const
+      requires std::ranges::range<const R>
+   {
+      return next_(end_index_);
+   }
+
+   /**
+    * @brief Gets an iterator to the end of the slice view.
+    * @return Iterator to the end of the slice view.
+    */
+   [[nodiscard]] constexpr auto end()
+      requires std::ranges::range<R>
+   {
+      if constexpr (cacheable_range<R>)
+      {
+         return cached_next_(end_, end_index_);
+      }
+      else
+      {
+         return next_(end_index_);
+      }
    }
 
    /**
@@ -120,42 +148,37 @@ class slice_view : public std::ranges::view_interface<slice_view<R>>
  private:
    /**
     * @brief Get the next iterator advanced by n elements.
-    * @details The begin iterator from the base range will be advanced by n elements. If
-    * caching is used, the iterator will also be cached and reused for repeated calls to
-    * next.
-    * @param iter A cached iterator or an empty type.
+    * @param iter A cached iterator.
     * @param n number of elements to advance.
     * @return The resulting iterator advanced by n elements.
-    * @note The argument cached_iter is a template because it may be either
-    * cached_iterator or an empty type. The empty types need to be distinct empty types
-    * in order for [[no_unique_address]] to work properly. This is the reason for the
-    * template: the cached begin and end iterators are distinct empty types when
-    * is_cached_iterator_ is false.
     */
-   [[nodiscard]] constexpr auto next(auto& iter, difference_type n) const
+   [[nodiscard]] constexpr auto cached_next_(cached_iterator_t<R>& iter, difference_type n)
+      requires cacheable_range<R>
    {
-      if constexpr (cacheable_range<R>)
+      if (iter.has_value())
       {
-         if (iter.has_value())
-         {
-            return iter.value();
-         }
+         return *iter;
       }
 
-      auto next_iter = std::ranges::next(std::ranges::begin(base_), n, std::ranges::end(base_));
-      if constexpr (cacheable_range<R>)
-      {
-         iter.emplace(next_iter);
-      }
-      return next_iter;
+      return iter.emplace(next_(n));
+   }
+
+   /**
+    * @brief Get the next iterator advanced by n elements.
+    * @param n number of elements to advance.
+    * @return The resulting iterator advanced by n elements.
+    */
+   [[nodiscard]] constexpr auto next_(difference_type n) const
+   {
+      return std::ranges::next(std::ranges::begin(base_), n, std::ranges::end(base_));
    }
 
    R base_{};
    difference_type start_index_{0};
    difference_type end_index_{0};
 
-   [[no_unique_address]] mutable conditional_cached_iterator_t<R> begin_;
-   [[no_unique_address]] mutable conditional_cached_iterator_t<R> end_;
+   [[no_unique_address]] conditional_cached_iterator_t<R> begin_;
+   [[no_unique_address]] conditional_cached_iterator_t<R> end_;
 };
 
 /**
