@@ -253,8 +253,8 @@ TEST_CASE(
    static constexpr auto timeout = 10ms;
    auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
 
-   queue.try_enqueue("ten");
-   queue.try_enqueue("twenty");
+   CHECK(queue.try_enqueue("ten"));
+   CHECK(queue.try_enqueue("twenty"));
    CHECK(queue.full());
 
    SECTION("try_emplace_for times out")
@@ -281,8 +281,8 @@ TEST_CASE(
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
-   queue.try_emplace("ten");
-   queue.try_emplace("twenty");
+   CHECK(queue.try_emplace("ten"));
+   CHECK(queue.try_emplace("twenty"));
 
    auto producer = std::jthread([&queue]() { CHECK(queue.try_emplace_for(1s, "thirty")); });
 
@@ -305,8 +305,8 @@ TEST_CASE(
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
-   queue.try_emplace("ten");
-   queue.try_emplace("twenty");
+   CHECK(queue.try_emplace("ten"));
+   CHECK(queue.try_emplace("twenty"));
 
    auto producer = std::jthread(
       [&queue]()
@@ -333,8 +333,8 @@ TEST_CASE(
    static constexpr auto timeout = 10ms;
    auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
 
-   queue.try_enqueue(10);
-   queue.try_enqueue(20);
+   CHECK(queue.try_enqueue(10));
+   CHECK(queue.try_enqueue(20));
    CHECK(queue.full());
 
    SECTION("try_enqueue_for times out")
@@ -361,8 +361,8 @@ TEST_CASE(
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
-   queue.try_enqueue(10);
-   queue.try_enqueue(20);
+   CHECK(queue.try_enqueue(10));
+   CHECK(queue.try_enqueue(20));
 
    auto producer = std::jthread([&queue]() { CHECK(queue.try_enqueue_for(1s, 30)); });
 
@@ -385,8 +385,8 @@ TEST_CASE(
    "[spsc][blocking_queue][concurrent]")
 {
    auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
-   queue.try_enqueue(10);
-   queue.try_enqueue(20);
+   CHECK(queue.try_enqueue(10));
+   CHECK(queue.try_enqueue(20));
 
    auto producer = std::jthread(
       [&queue]() { CHECK(queue.try_enqueue_until(std::chrono::steady_clock::now() + 1s, 30)); });
@@ -527,4 +527,85 @@ TEST_CASE(
       CHECK(queue.try_dequeue_until(std::chrono::steady_clock::now() + 1s, result));
       CHECK(result == 11235);
    }
+}
+
+// -------------------------------------------------------------------------------------------------
+// Benchmarks
+// -------------------------------------------------------------------------------------------------
+
+TEST_CASE("spsc::static_blocking_queue - benchmark blocking latency", "[spsc][queue][!benchmark]")
+{
+   static constexpr auto queue_size = 1024uz;
+   auto ping = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+   auto pong = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+   auto timeout = std::chrono::milliseconds{1};
+
+   std::jthread responder(
+      [&](std::stop_token st)
+      {
+         auto value = std::int32_t{0};
+         while (not st.stop_requested())
+         {
+            if (ping.try_dequeue_for(timeout, value))
+            {
+               pong.enqueue(value);
+            }
+         }
+      });
+
+   BENCHMARK_ADVANCED("Queue Round-Trip Time")(Catch::Benchmark::Chronometer meter)
+   {
+      meter.measure(
+         [&]
+         {
+            ping.enqueue(42);
+            return pong.dequeue();
+         });
+   };
+
+   responder.request_stop();
+}
+
+TEST_CASE(
+   "spsc::static_blocking_queue - benchmark non-blocking latency", "[spsc][queue][!benchmark]")
+{
+   // Benchmarks the overhead of the counting_semaphores when only non-blocking
+   // try_enqueue/try_dequeue member functions are called. This is the same test used in the
+   // non-blocing queue.
+   static constexpr auto queue_size = 1024uz;
+   auto ping = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+   auto pong = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+
+   std::jthread responder(
+      [&](std::stop_token st)
+      {
+         auto value = std::int32_t{};
+         while (not st.stop_requested())
+         {
+            if (ping.try_dequeue(value))
+            {
+               while (not pong.try_enqueue(value))
+                  ;
+            }
+         }
+      });
+
+   auto value = std::int32_t{0};
+
+   BENCHMARK_ADVANCED("Queue Round-Trip Time")(Catch::Benchmark::Chronometer meter)
+   {
+      meter.measure(
+         [&]
+         {
+            while (not ping.try_enqueue(42))
+               ;
+            while (not pong.try_dequeue(value))
+               ;
+            return value;
+         });
+   };
+
+   responder.request_stop();
+   while (pong.try_dequeue(value))
+      ;
 }

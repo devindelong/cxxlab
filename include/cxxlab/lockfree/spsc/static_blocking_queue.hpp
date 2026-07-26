@@ -94,7 +94,7 @@ class static_blocking_queue
     * @return True on success, false otherwise (the queue was full).
     */
    template <typename... Args>
-   auto try_emplace(Args&&... args) -> bool
+   [[nodiscard]] auto try_emplace(Args&&... args) -> bool
       requires std::constructible_from<T, Args...>
    {
       return try_emplace_impl_(no_wait_time{}, std::forward<Args>(args)...);
@@ -142,7 +142,7 @@ class static_blocking_queue
     * @return True on success, false otherwise (the queue was full).
     */
    template <typename Elem>
-   auto try_enqueue(Elem&& elem) -> bool
+   [[nodiscard]] auto try_enqueue(Elem&& elem) -> bool
       requires std::convertible_to<Elem, T>
    {
       return try_enqueue_impl_(no_wait_time{}, std::forward<Elem>(elem));

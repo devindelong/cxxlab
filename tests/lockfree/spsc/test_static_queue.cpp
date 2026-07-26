@@ -9,10 +9,12 @@
 
 #include "cxxlab/lockfree/spsc/static_queue.hpp"
 
+#include <atomic>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include <iterator>
+#include <latch>
 #include <ranges>
 #include <thread>
 #include <vector>
@@ -274,4 +276,48 @@ TEST_CASE(
    consumer.join();
 
    CHECK(std::ranges::equal(result, expected));
+}
+
+// -------------------------------------------------------------------------------------------------
+// Benchmarks
+// -------------------------------------------------------------------------------------------------
+
+TEST_CASE("spsc::static_queue - benchmark latency", "[spsc][queue][!benchmark]")
+{
+   static constexpr auto queue_size = 1024uz;
+   auto ping = cxxlab::spsc::static_queue<std::int32_t, queue_size>{};
+   auto pong = cxxlab::spsc::static_queue<std::int32_t, queue_size>{};
+
+   std::jthread responder(
+      [&](std::stop_token st)
+      {
+         auto value = std::int32_t{};
+         while (not st.stop_requested())
+         {
+            if (ping.try_dequeue(value))
+            {
+               while (not pong.try_enqueue(value))
+                  ;
+            }
+         }
+      });
+
+   auto value = std::int32_t{0};
+
+   BENCHMARK_ADVANCED("Queue Round-Trip Time")(Catch::Benchmark::Chronometer meter)
+   {
+      meter.measure(
+         [&]
+         {
+            while (not ping.try_enqueue(42))
+               ;
+            while (not pong.try_dequeue(value))
+               ;
+            return value;
+         });
+   };
+
+   responder.request_stop();
+   while (pong.try_dequeue(value))
+      ;
 }
