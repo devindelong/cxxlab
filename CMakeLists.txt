@@ -81,7 +81,7 @@ target_compile_features (
 if(CXXLAB_CACHE_LINE_SIZE)
   target_compile_definitions (
     ${CXXLAB_LIBRARY}
-    PRIVATE
+    INTERFACE
       CXXLAB_CACHE_LINE_SIZE=${CXXLAB_CACHE_LINE_SIZE}
   )
 endif()

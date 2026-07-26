@@ -10,12 +10,10 @@
 #include "cxxlab/memory/aligned_wrapper.hpp"
 
 #include "catch2/catch_test_macros.hpp"
-
-#include <new>
+#include "cxxlab/memory/cache_line_size.hpp"
 
 TEST_CASE("aligned_wrapper - alignment is correct", "[aligned_wrapper][alignof]")
 {
    STATIC_CHECK(alignof(cxxlab::aligned_wrapper<int, 64>) == 64);
-   STATIC_CHECK(
-      alignof(cxxlab::cache_aligned_wrapper<int>) == std::hardware_destructive_interference_size);
+   STATIC_CHECK(alignof(cxxlab::cache_aligned_wrapper<int>) == cxxlab::constants::cache_line_size);
 }
