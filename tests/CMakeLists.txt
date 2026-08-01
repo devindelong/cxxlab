@@ -16,7 +16,7 @@ include (FetchContent)
 FetchContent_Declare (
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.15.0
+  GIT_TAG        v3.15.3
 )
 FetchContent_MakeAvailable (Catch2)
 include(Catch)
@@ -57,13 +57,6 @@ add_test (
   NAME ${CXXLAB_TESTS_TARGET}
   COMMAND ${CXXLAB_TESTS_TARGET}
  )
-
-# Silence this warning
-# Clang 22 error: '__COUNTER__' is a C2y extension [-Werror,-Wc2y-extensions]
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(${CXXLAB_TESTS_TARGET} PRIVATE -Wno-c2y-extensions)
-endif()
-
 
 if (ENABLE_COVERAGE)
   target_enable_coverage(${CXXLAB_TESTS_TARGET})
