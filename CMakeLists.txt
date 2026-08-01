@@ -21,6 +21,7 @@ option(ENABLE_UBSAN "Enable UB sanitizer" "OFF")
 
 # Build options.
 option(ENABLE_TESTING "Enable testing" ${PROJECT_IS_TOP_LEVEL})
+option(ENABLE_BENCHMARKS "Enable benchmarks" ${PROJECT_IS_TOP_LEVEL})
 option(ENABLE_APPS "Enable example apps" ${PROJECT_IS_TOP_LEVEL})
 
 set (CXXLAB_CACHE_LINE_SIZE "" CACHE STRING
@@ -94,34 +95,32 @@ message (STATUS "Building with address sanitizer - ${ENABLE_ASAN}")
 message (STATUS "Building with thread sanitizer - ${ENABLE_TSAN}")
 message (STATUS "Building with UB sanitizer - ${ENABLE_UBSAN}")
 
-set (SANITIZERS_LIBRARY ${PROJECT_NAME}_sanitizers)
-add_library(${SANITIZERS_LIBRARY} INTERFACE)
+set (CXXLAB_SANITIZERS_LIBRARY ${PROJECT_NAME}_sanitizers)
+add_library(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE)
 
 if(ENABLE_ASAN)
-  target_compile_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=address -fno-omit-frame-pointer)
-  target_link_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=address)
+  target_compile_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=address -fno-omit-frame-pointer)
+  target_link_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=address)
 endif()
 
 if(ENABLE_TSAN)
-  target_compile_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=thread)
-  target_link_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=thread)
+  target_compile_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=thread)
+  target_link_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=thread)
 endif()
 
 if(ENABLE_UBSAN)
-  target_compile_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=undefined -fno-omit-frame-pointer)
-  target_link_options(${SANITIZERS_LIBRARY} INTERFACE -fsanitize=undefined)
+  target_compile_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=undefined -fno-omit-frame-pointer)
+  target_link_options(${CXXLAB_SANITIZERS_LIBRARY} INTERFACE -fsanitize=undefined)
 endif()
 
 ################################################################################
-# Testing
+# Testing/Benchmarks
 ################################################################################
 
-# Testing
-message (STATUS "Building unit tests - ${ENABLE_TESTING}")
-if (ENABLE_TESTING)
+if (ENABLE_TESTING OR ENABLE_BENCHMARKS)
   enable_testing()
   add_subdirectory ("${CXXLAB_TEST_PATH}")
-endif()
+endif ()
 
 ################################################################################
 # Example apps

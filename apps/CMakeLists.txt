@@ -8,7 +8,7 @@
 #
 # ================================================================================
 
-function (add_multiple_executables)
+function (add_executable_for_each_source)
   set(options "")
   set(oneValueArgs "")
   set(multiValueArgs SOURCES INCLUDE_PATHS LINK_LIBRARIES)
@@ -30,7 +30,7 @@ function (add_multiple_executables)
     target_link_libraries(
       ${TARGET}
       ${ARGS_LINK_LIBRARIES}
-      ${SANITIZERS_LIBRARY}
+      ${CXXLAB_SANITIZERS_LIBRARY}
     )
 
     target_compile_options (
@@ -44,7 +44,7 @@ endfunction()
 
 file(GLOB EXAMPLES_SOURCES CONFIGURE_DEPENDS *.cpp *.hpp)
 
-add_multiple_executables(
+add_executable_for_each_source(
   SOURCES
     ${EXAMPLES_SOURCES}
   LINK_LIBRARIES

@@ -22,44 +22,18 @@ FetchContent_MakeAvailable (Catch2)
 include(Catch)
 
 # ------------------------------------------------------------------------------
-# Unit tests
-# ------------------------------------------------------------------------------
 
-include(${CXXLAB_CMAKE_PATH}/coverage.cmake)
+set (CXXLAB_UNIT_TEST_PATH       "${CMAKE_CURRENT_SOURCE_DIR}/unit")
+set (CXXLAB_BENCHMARK_TEST_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/benchmark")
 
-set (CXXLAB_TESTS_TARGET "${CXXLAB_LIBRARY_NAME}_tests")
-
-file (GLOB_RECURSE
-  CXXLAB_TEST_SOURCES
-  CONFIGURE_DEPENDS
-  "*.cpp"
-)
-
-add_executable (
-  ${CXXLAB_TESTS_TARGET}
-  ${CXXLAB_TEST_SOURCES}
-)
-
-target_link_libraries (
-  ${CXXLAB_TESTS_TARGET} PRIVATE
-  ${CXXLAB_LIBRARY_NAME}
-  ${SANITIZERS_LIBRARY}
-  Catch2::Catch2WithMain
-)
-
-target_compile_options (
-  ${CXXLAB_TESTS_TARGET}
-  PRIVATE
-  ${CXXLAB_WARNING_FLAGS}
-)
-
-add_test (
-  NAME ${CXXLAB_TESTS_TARGET}
-  COMMAND ${CXXLAB_TESTS_TARGET}
- )
-
-if (ENABLE_COVERAGE)
-  target_enable_coverage(${CXXLAB_TESTS_TARGET})
+# Unit testing
+message (STATUS "Building unit tests - ${ENABLE_TESTING}")
+if (ENABLE_TESTING)
+  add_subdirectory (${CXXLAB_UNIT_TEST_PATH})
 endif()
 
-catch_discover_tests (${CXXLAB_TESTS_TARGET})
+# Benchmark testing
+message (STATUS "Building benchmarks - ${ENABLE_BENCHMARKS}")
+if (ENABLE_BENCHMARKS)
+  add_subdirectory (${CXXLAB_BENCHMARK_TEST_PATH})
+endif()
