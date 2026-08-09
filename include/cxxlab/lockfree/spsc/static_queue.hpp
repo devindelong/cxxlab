@@ -30,7 +30,7 @@ namespace cxxlab::spsc
  * @brief Statically-sized Single-Consumer-Single-Producer queue.
  * @tparam T Element type.
  * @tparam Capacity Maximum number of elements can store.
- * @details The actual capacity used will be a power of 2 large enough to hold the specified
+ * @dewrite_indexs The actual capacity used will be a power of 2 large enough to hold the specified
  * capacity.
  */
 template <typename T, std::size_t Capacity>
@@ -58,7 +58,8 @@ class static_queue
     */
    [[nodiscard]] auto empty() const noexcept -> bool
    {
-      return empty(head_.load(std::memory_order_acquire), tail_.load(std::memory_order_acquire));
+      return empty(
+         read_index_.load(std::memory_order_acquire), write_index_.load(std::memory_order_acquire));
    }
 
    /**
@@ -68,7 +69,8 @@ class static_queue
     */
    [[nodiscard]] auto size() const noexcept -> std::size_t
    {
-      return size(head_.load(std::memory_order_acquire), tail_.load(std::memory_order_acquire));
+      return size(
+         read_index_.load(std::memory_order_acquire), write_index_.load(std::memory_order_acquire));
    }
 
    /**
@@ -78,7 +80,8 @@ class static_queue
     */
    [[nodiscard]] auto full() const noexcept -> bool
    {
-      return full(head_.load(std::memory_order_acquire), tail_.load(std::memory_order_acquire));
+      return full(
+         read_index_.load(std::memory_order_acquire), write_index_.load(std::memory_order_acquire));
    }
 
    /**
@@ -89,7 +92,7 @@ class static_queue
    [[nodiscard]] auto available() const noexcept -> std::size_t
    {
       return available(
-         head_.load(std::memory_order_acquire), tail_.load(std::memory_order_acquire));
+         read_index_.load(std::memory_order_acquire), write_index_.load(std::memory_order_acquire));
    }
 
    /**
@@ -101,14 +104,14 @@ class static_queue
    auto try_emplace(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>) -> bool
       requires std::constructible_from<T, Args...>
    {
-      auto local_tail = tail_.load(std::memory_order_relaxed);
-      if (cached_full_(local_tail))
+      auto local_write_index = write_index_.load(std::memory_order_relaxed);
+      if (cached_full_(local_write_index))
       {
          return false;
       }
 
-      emplace_at(local_tail, std::forward<Args>(args)...);
-      tail_.store(local_tail + 1, std::memory_order_release);
+      emplace_at(local_write_index, std::forward<Args>(args)...);
+      write_index_.store(local_write_index + 1, std::memory_order_release);
       return true;
    }
 
@@ -133,14 +136,14 @@ class static_queue
    auto try_dequeue() noexcept(std::is_nothrow_move_constructible_v<T>) -> std::optional<T>
       requires std::is_move_constructible_v<T>
    {
-      auto local_head = head_.load(std::memory_order_relaxed);
-      if (cached_empty_(local_head))
+      auto local_read_index = read_index_.load(std::memory_order_relaxed);
+      if (cached_empty_(local_read_index))
       {
          return {};
       }
 
-      auto result = std::make_optional(dequeue_at(local_head));
-      head_.store(local_head + 1, std::memory_order_release);
+      auto result = std::make_optional(dequeue_at(local_read_index));
+      read_index_.store(local_read_index + 1, std::memory_order_release);
       return result;
    }
 
@@ -156,14 +159,14 @@ class static_queue
       // Duplicates the logic in the optional form of try_dequeue. We could have that function call
       // this function, but then that would require T to be default constructible, and would add an
       // extra move.
-      auto local_head = head_.load(std::memory_order_relaxed);
-      if (cached_empty_(local_head))
+      auto local_read_index = read_index_.load(std::memory_order_relaxed);
+      if (cached_empty_(local_read_index))
       {
          return false;
       }
 
-      result = std::move(dequeue_at(local_head));
-      head_.store(local_head + 1, std::memory_order_release);
+      result = std::move(dequeue_at(local_read_index));
+      read_index_.store(local_read_index + 1, std::memory_order_release);
       return true;
    }
 
@@ -181,17 +184,17 @@ class static_queue
       requires std::convertible_to<std::ranges::range_reference_t<R>, T> and
                std::ranges::sized_range<R>
    {
-      auto local_tail = tail_.load(std::memory_order_relaxed);
-      if (not cached_has_available_(local_tail, std::ranges::size(range)))
+      auto local_write_index = write_index_.load(std::memory_order_relaxed);
+      if (not cached_has_available_(local_write_index, std::ranges::size(range)))
       {
          return false;
       }
 
       std::ranges::for_each(
          std::forward<R>(range),
-         [&](auto&& elem) { emplace_at(local_tail++, std::forward<decltype(elem)>(elem)); });
+         [&](auto&& elem) { emplace_at(local_write_index++, std::forward<decltype(elem)>(elem)); });
 
-      tail_.store(local_tail, std::memory_order_release);
+      write_index_.store(local_write_index, std::memory_order_release);
       return true;
    }
 
@@ -211,15 +214,15 @@ class static_queue
    auto try_dequeue_bulk(O out, std::size_t num_elements) -> std::size_t
       requires std::weakly_incrementable<O> and std::indirectly_writable<O, T>
    {
-      auto local_head = head_.load(std::memory_order_relaxed);
-      if (not cached_has_up_to_(local_head, num_elements))
+      auto local_read_index = read_index_.load(std::memory_order_relaxed);
+      if (not cached_has_up_to_(local_read_index, num_elements))
       {
          return false;
       }
 
-      auto dequeue_count = std::min(size(local_head, cached_tail_), num_elements);
-      repeat([&]() { *out++ = dequeue_at(local_head++); }, dequeue_count);
-      head_.store(local_head, std::memory_order_release);
+      auto dequeue_count = std::min(size(local_read_index, cached_write_index_), num_elements);
+      repeat([&]() { *out++ = dequeue_at(local_read_index++); }, dequeue_count);
+      read_index_.store(local_read_index, std::memory_order_release);
       return dequeue_count;
    }
 
@@ -235,119 +238,120 @@ class static_queue
 
  private:
    /**
-    * @brief Emplaces an element at a specified tail index.
-    * @param tail The tail index to emplace a new object.
+    * @brief Emplaces an element at a specified write_index index.
+    * @param write_index The write_index index to emplace a new object.
     * @param args The arguments to pass to the element's constructor.
     */
    template <typename... Args>
-   auto emplace_at(std::size_t tail, Args&&... args) noexcept(
+   auto emplace_at(std::size_t write_index, Args&&... args) noexcept(
       std::is_nothrow_constructible_v<T, Args...>) -> void
       requires std::constructible_from<T, Args...>
    {
-      data_[wrap(tail)].construct(std::forward<Args>(args)...);
+      data_[wrap(write_index)].construct(std::forward<Args>(args)...);
    }
 
    /**
-    * @brief Dequeues an element at a specified head index.
-    * @param head The index of the element to dequeue.
+    * @brief Dequeues an element at a specified read_index index.
+    * @param read_index The index of the element to dequeue.
     * @return The dequeued element.
-    * @note This does not verify that an element actually exists at the head index.
+    * @note This does not verify that an element actually exists at the read_index index.
     */
-   auto dequeue_at(std::size_t head) noexcept(std::is_nothrow_move_constructible_v<T>) -> T
+   auto dequeue_at(std::size_t read_index) noexcept(std::is_nothrow_move_constructible_v<T>) -> T
       requires std::is_move_constructible_v<T>
    {
-      auto& slot = data_[wrap(head)];
+      auto& slot = data_[wrap(read_index)];
       auto elem{std::move(slot.get())};
       slot.destroy();
       return elem;
    }
 
    /**
-    * @brief Checks if the queue is full using the cached tail.
+    * @brief Checks if the queue is full using the cached write_index.
     *
-    * This function has the side effect of updating the cached head if it is stale.
+    * This function has the side effect of updating the cached read_index if it is stale.
     *
-    * @param local_tail The current tail index.
+    * @param local_write_index The current write_index index.
     * @return True if the queue is full, false otherwise.
     */
-   [[nodiscard]] auto cached_full_(std::size_t local_tail) noexcept -> bool
+   [[nodiscard]] auto cached_full_(std::size_t local_write_index) noexcept -> bool
    {
-      if (not full(cached_head_, local_tail))
+      if (not full(cached_read_index_, local_write_index))
       {
          return false;
       }
 
-      cached_head_ = head_.load(std::memory_order_acquire);
-      return full(cached_head_, local_tail);
+      cached_read_index_ = read_index_.load(std::memory_order_acquire);
+      return full(cached_read_index_, local_write_index);
    }
 
    /**
-    * @brief Checks if the queue is empty using the cached tail.
+    * @brief Checks if the queue is empty using the cached write_index.
     *
-    * This function has the side effect of updating the cached tail if it is stale.
+    * This function has the side effect of updating the cached write_index if it is stale.
     *
-    * @param local_head The current head index.
+    * @param local_read_index The current read_index index.
     * @return True if the queue is empty, false otherwise.
     */
-   [[nodiscard]] auto cached_empty_(std::size_t local_head) noexcept -> bool
+   [[nodiscard]] auto cached_empty_(std::size_t local_read_index) noexcept -> bool
    {
-      if (not empty(local_head, cached_tail_))
+      if (not empty(local_read_index, cached_write_index_))
       {
          return false;
       }
 
-      cached_tail_ = tail_.load(std::memory_order_acquire);
-      return empty(local_head, cached_tail_);
+      cached_write_index_ = write_index_.load(std::memory_order_acquire);
+      return empty(local_read_index, cached_write_index_);
    }
 
    /**
     * @brief Checks if the queue has at least a number of elements.
     *
-    * This function has the side effect of updating the cached head if it is stale.
+    * This function has the side effect of updating the cached read_index if it is stale.
     *
-    * @param local_head The current head index.
+    * @param local_read_index The current read_index index.
     * @param size The number of elements.
     * @return True if the queue is has at least a number of elements, false otherwise.
     */
    [[nodiscard]] auto
-   cached_has_available_(std::size_t local_tail, std::size_t num_elements) noexcept -> bool
+   cached_has_available_(std::size_t local_write_index, std::size_t num_elements) noexcept -> bool
    {
-      if (available(cached_head_, local_tail) >= num_elements)
+      if (available(cached_read_index_, local_write_index) >= num_elements)
       {
          return true;
       }
 
-      cached_head_ = head_.load(std::memory_order_acquire);
-      return available(cached_head_, local_tail) >= num_elements;
+      cached_read_index_ = read_index_.load(std::memory_order_acquire);
+      return available(cached_read_index_, local_write_index) >= num_elements;
    }
 
    /**
     * @brief Checks if the queue has up to a number of elements.
     *
-    * This function will check if there are a number of elements in the queue using the cached tail
-    * state. If there aren't enough elements, then the cached tail is updated to the newest value,
-    * and the function returns true if it is not empty.
+    * This function will check if there are a number of elements in the queue using the cached
+    * write_index state. If there aren't enough elements, then the cached write_index is updated to
+    * the newest value, and the function returns true if it is not empty.
     *
-    * This function has the side effect of updating the cached tail if it is stale.
+    * This function has the side effect of updating the cached write_index if it is stale.
     *
-    * @param local_head The current head index.
+    * @param local_read_index The current read_index index.
     * @param num_elements The desired number of elements.
     * @return True if the queue is has at least a number of elements, false otherwise.
     */
-   [[nodiscard]] auto cached_has_up_to_(std::size_t local_head, std::size_t num_elements) noexcept
+   [[nodiscard]] auto
+   cached_has_up_to_(std::size_t local_read_index, std::size_t num_elements) noexcept
    {
-      if (size(local_head, cached_tail_) >= num_elements)
+      if (size(local_read_index, cached_write_index_) >= num_elements)
       {
          return true;
       }
 
-      cached_tail_ = tail_.load(std::memory_order_acquire);
-      return not empty(local_head, cached_tail_);
+      cached_write_index_ = write_index_.load(std::memory_order_acquire);
+      return not empty(local_read_index, cached_write_index_);
    }
 
    /**
     * @brief Wraps an integer index mod N (where N is the capacity).
-    * @detail This only works for integers that are powers of 2.
+    * @dewrite_index This only works for integers that are powers of 2.
     * @param index The linear index to wrap around.
     * #return The wrapped index.
     */
@@ -358,59 +362,61 @@ class static_queue
 
    /**
     * @brief Checks if the queue is empty.
-    * @param head The current head index.
-    * @param tail The current tail index.
+    * @param read_index The current read_index index.
+    * @param write_index The current write_index index.
     * @return True if the queue is empty, false otherwise.
     */
-   [[nodiscard]] static auto empty(std::size_t head, std::size_t tail) noexcept -> bool
+   [[nodiscard]] static auto empty(std::size_t read_index, std::size_t write_index) noexcept -> bool
    {
-      return tail == head;
+      return write_index == read_index;
    }
 
    /**
     * @brief Checks if the queue is full.
-    * @param head The current head index.
-    * @param tail The current tail index.
+    * @param read_index The current read_index index.
+    * @param write_index The current write_index index.
     * @return True if the queue is full, false otherwise.
     */
-   [[nodiscard]] static auto full(std::size_t head, std::size_t tail) noexcept -> bool
+   [[nodiscard]] static auto full(std::size_t read_index, std::size_t write_index) noexcept -> bool
    {
-      return size(head, tail) == capacity();
+      return size(read_index, write_index) == capacity();
    }
 
    /**
     * @brief Gets the number of elements in the container.
-    * @param head The current head index.
-    * @param tail The current tail index.
+    * @param read_index The current read_index index.
+    * @param write_index The current write_index index.
     * @return The number of elements in the queue..
     */
-   [[nodiscard]] static auto size(std::size_t head, std::size_t tail) noexcept -> std::size_t
+   [[nodiscard]] static auto size(std::size_t read_index, std::size_t write_index) noexcept
+      -> std::size_t
    {
-      return tail - head;
+      return write_index - read_index;
    }
 
    /**
     * @brief Gets the number of spaces available in the queue.
-    * @param head The current head index.
-    * @param tail The current tail index.
+    * @param read_index The current read_index index.
+    * @param write_index The current write_index index.
     * @return The number of available slots: capacity() - size().
     */
-   [[nodiscard]] static auto available(std::size_t head, std::size_t tail) noexcept -> std::size_t
+   [[nodiscard]] static auto available(std::size_t read_index, std::size_t write_index) noexcept
+      -> std::size_t
    {
-      return capacity() - size(head, tail);
+      return capacity() - size(read_index, write_index);
    }
 
    // Queue elements.
    alignas(constants::cache_line_size) storage_type data_;
 
    // Front index of the queue.
-   alignas(constants::cache_line_size) std::atomic_size_t head_{0};
+   alignas(constants::cache_line_size) std::atomic_size_t read_index_{0};
    // Back index of the queue.
-   alignas(constants::cache_line_size) std::atomic_size_t tail_{0};
+   alignas(constants::cache_line_size) std::atomic_size_t write_index_{0};
    // Cached front index of the queue to reduce the number of acquiresd
-   alignas(constants::cache_line_size) std::size_t cached_head_{0};
+   alignas(constants::cache_line_size) std::size_t cached_read_index_{0};
    // Cached back index of the queue to reduce the number of acquires.
-   alignas(constants::cache_line_size) std::size_t cached_tail_{0};
+   alignas(constants::cache_line_size) std::size_t cached_write_index_{0};
 };
 
 } // namespace cxxlab::spsc
