@@ -28,7 +28,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, typename Predicate>
 class filter_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    constexpr filter_iterator()
       requires std::default_initializable<Predicate>
    = default;
@@ -54,7 +54,7 @@ class filter_iterator : public iterator_interface<Iterator>
       return std::forward_like<Self>(self.predicate_);
    }
 
- private:
+private:
    [[no_unique_address]] Predicate predicate_;
 };
 

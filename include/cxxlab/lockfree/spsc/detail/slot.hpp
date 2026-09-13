@@ -26,7 +26,7 @@ namespace detail
 template <typename T>
 class slot
 {
- public:
+public:
    using value_type = T;
    using pointer = T*;
    using const_pointer = T const*;
@@ -66,7 +66,7 @@ class slot
       }
    }
 
- private:
+private:
    /**
     * @brief Gets a pointer to the stored object.
     * @return Pointer to the stored object.

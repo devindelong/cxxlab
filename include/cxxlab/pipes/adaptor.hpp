@@ -39,7 +39,7 @@ namespace detail
 template <typename Left, typename Right>
 class composed_adaptor : public adaptor_closure
 {
- public:
+public:
    constexpr composed_adaptor(Left&& left, Right&& right)
        : left_{std::forward<Left>(left)}, right_{std::forward<Right>(right)}
    {
@@ -52,7 +52,7 @@ class composed_adaptor : public adaptor_closure
       return left_(right_(std::forward<Sink>(sink)));
    }
 
- private:
+private:
    [[no_unique_address]] Left left_;
    [[no_unique_address]] Right right_;
 };
@@ -65,7 +65,7 @@ class composed_adaptor : public adaptor_closure
 template <template <typename...> typename T, typename... Args>
 class generic_adaptor : public adaptor_closure
 {
- public:
+public:
    template <typename... FwdArgs>
       requires(std::convertible_to<FwdArgs, Args> && ...)
    explicit constexpr generic_adaptor(FwdArgs&&... args) : args_{std::forward<FwdArgs>(args)...}
@@ -81,7 +81,7 @@ class generic_adaptor : public adaptor_closure
          std::forward_like<Self>(self.args_));
    }
 
- private:
+private:
    [[no_unique_address]] std::tuple<Args...> args_;
 };
 

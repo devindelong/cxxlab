@@ -26,7 +26,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, std::integral Integral>
 class take_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    constexpr take_iterator() = default;
 
    constexpr take_iterator(Iterator iter, Integral count)
@@ -47,7 +47,7 @@ class take_iterator : public iterator_interface<Iterator>
    constexpr auto count() const noexcept -> auto { return count_; }
    constexpr auto taken() const noexcept -> auto { return taken_; }
 
- private:
+private:
    Integral count_{0};
    Integral taken_{0};
 };

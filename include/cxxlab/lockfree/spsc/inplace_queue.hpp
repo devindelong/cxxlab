@@ -41,7 +41,7 @@ class inplace_queue
    // Internal storage type.
    using storage_type = std::array<detail::slot<T>, POW_2_CAPACITY_>;
 
- public:
+public:
    /**
     * @brief Gets the capacity.
     * @return The capacity.
@@ -236,7 +236,7 @@ class inplace_queue
       };
    }
 
- private:
+private:
    /**
     * @brief Emplaces an element at a specified write_index index.
     * @param write_index The write_index index to emplace a new object.

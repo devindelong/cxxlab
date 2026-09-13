@@ -25,7 +25,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, typename Predicate>
 class take_while_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    constexpr take_while_iterator()
       requires std::default_initializable<Predicate>
    = default;
@@ -52,7 +52,7 @@ class take_while_iterator : public iterator_interface<Iterator>
       return std::forward_like<Self>(self.predicate_);
    }
 
- private:
+private:
    [[no_unique_address]] Predicate predicate_;
    bool should_take_{true};
 };

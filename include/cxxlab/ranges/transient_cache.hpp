@@ -33,7 +33,7 @@ template <typename T>
    requires std::is_object_v<T>
 class transient_cache
 {
- public:
+public:
    /**
     * @brief Default constructor.
     */
@@ -119,7 +119,7 @@ class transient_cache
       return value_.emplace(std::forward<Args>(args)...);
    }
 
- private:
+private:
    std::optional<T> value_{};
 };
 

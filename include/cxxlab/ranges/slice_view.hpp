@@ -38,7 +38,7 @@ template <std::ranges::viewable_range R>
 class slice_view : public std::ranges::view_interface<slice_view<R>>
 {
 
- public:
+public:
    /**
     * @brief Alias for the ranges difference type.
     */
@@ -145,7 +145,7 @@ class slice_view : public std::ranges::view_interface<slice_view<R>>
       return static_cast<std::make_unsigned_t<decltype(slice_size)>>(slice_size);
    }
 
- private:
+private:
    /**
     * @brief Get the next iterator advanced by n elements.
     * @param iter A cached iterator.
@@ -207,7 +207,7 @@ template <std::integral DifferenceType>
 class slice_range_adaptor
     : public std::ranges::range_adaptor_closure<slice_range_adaptor<DifferenceType>>
 {
- public:
+public:
    /*
     * @brief Constructor.
     * @param start Starting index of the slice.
@@ -232,7 +232,7 @@ class slice_range_adaptor
          static_cast<std::ranges::range_difference_t<R>>(end_));
    }
 
- private:
+private:
    DifferenceType start_;
    DifferenceType end_;
 };

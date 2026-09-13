@@ -43,11 +43,11 @@ class iterator_interface : public output_iterator_types<void>
          return *this;
       }
 
-    private:
+   private:
       std::reference_wrapper<Self> self_ref_;
    };
 
- public:
+public:
    /**
     * @brief Defaulted constructor.
     */
@@ -101,7 +101,7 @@ class iterator_interface : public output_iterator_types<void>
       return std::forward_like<Self>(self.out_iter_);
    }
 
- protected:
+protected:
    template <typename Self, typename Elem>
    constexpr auto write(this Self&& self, Elem&& elem) -> void
       requires std::output_iterator<Iterator, Elem>
@@ -110,7 +110,7 @@ class iterator_interface : public output_iterator_types<void>
       ++self.out_iter_;
    }
 
- private:
+private:
    Iterator out_iter_{};
 };
 

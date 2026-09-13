@@ -25,7 +25,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, std::integral Integral>
 class drop_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    constexpr drop_iterator() = default;
 
    constexpr drop_iterator(Iterator iter, Integral count)
@@ -49,7 +49,7 @@ class drop_iterator : public iterator_interface<Iterator>
    constexpr auto count() const noexcept -> Integral { return count_; }
    constexpr auto dropped() const noexcept -> Integral { return dropped_; }
 
- private:
+private:
    Integral count_{0};
    Integral dropped_{0};
 };

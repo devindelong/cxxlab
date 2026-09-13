@@ -50,7 +50,7 @@ class blocking_inplace_queue
    {
    };
 
- public:
+public:
    /**
     * @brief Gets the capacity.
     * @return The capacity.
@@ -296,7 +296,7 @@ class blocking_inplace_queue
       return std::move(elem).value();
    }
 
- private:
+private:
    /**
     * @brief Calls try_acquire_for and protects against spurious failures.
     *

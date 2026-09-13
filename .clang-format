@@ -4,6 +4,7 @@ ColumnLimit: 100
 # Tab/space
 
 IndentWidth: 3
+AccessModifierOffset: -3
 UseTab: Never
 
 # Indentation

@@ -29,7 +29,7 @@ template <typename T, std::size_t Alignment>
    requires(Alignment >= alignof(T))
 class aligned_wrapper
 {
- public:
+public:
    /**
     * @brief Gets the alignment.
     * @return The alignment.
@@ -94,7 +94,7 @@ class aligned_wrapper
     */
    constexpr operator const T&&() const&& noexcept { return std::move(value_); }
 
- private:
+private:
    // Stored type.
    alignas(Alignment) T value_;
 };

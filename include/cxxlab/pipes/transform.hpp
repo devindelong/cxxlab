@@ -31,7 +31,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, typename Transform>
 class transform_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    /**
     * @brief Defaulted constructor..
     * @detail This constructor leaves the iterator in an invalid an unusable state.
@@ -72,7 +72,7 @@ class transform_iterator : public iterator_interface<Iterator>
       return std::forward_like<Self>(self.transform_);
    }
 
- private:
+private:
    [[no_unique_address]] Transform transform_;
 };
 

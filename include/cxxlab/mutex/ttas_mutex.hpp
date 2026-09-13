@@ -17,7 +17,7 @@ namespace cxxlab
 class ttas_mutex
 {
 
- public:
+public:
    auto lock() noexcept -> void
    {
       while (true)
@@ -46,7 +46,7 @@ class ttas_mutex
       lock_.notify_one();
    }
 
- private:
+private:
    std::atomic_flag lock_{};
 };
 } // namespace cxxlab

@@ -26,7 +26,7 @@ namespace cxxlab::pipes
 template <std::weakly_incrementable Iterator, std::integral Integral>
 class stride_iterator : public iterator_interface<Iterator>
 {
- public:
+public:
    constexpr stride_iterator() = default;
 
    constexpr stride_iterator(Iterator iter, Integral stride)
@@ -46,7 +46,7 @@ class stride_iterator : public iterator_interface<Iterator>
 
    constexpr auto stride() const noexcept -> auto { return stride_; }
 
- private:
+private:
    Integral stride_{0};
    Integral count_{0};
 };
