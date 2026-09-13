@@ -37,9 +37,9 @@ template <typename T, std::size_t Capacity>
 class inplace_queue
 {
    // Power of 2 capacity.
-   static constexpr auto BIT_CEIL_CAPACITY_ = std::bit_ceil(Capacity);
+   static constexpr auto POW_2_CAPACITY_ = std::bit_ceil(Capacity);
    // Internal storage type.
-   using storage_type = std::array<detail::slot<T>, BIT_CEIL_CAPACITY_>;
+   using storage_type = std::array<detail::slot<T>, POW_2_CAPACITY_>;
 
  public:
    /**
@@ -48,7 +48,7 @@ class inplace_queue
     */
    [[nodiscard]] static consteval auto capacity() noexcept -> std::size_t
    {
-      return BIT_CEIL_CAPACITY_;
+      return POW_2_CAPACITY_;
    }
 
    /**
