@@ -7,7 +7,7 @@
  * @author Devin DeLong
  */
 
-#include "cxxlab/lockfree/spsc/static_blocking_queue.hpp"
+#include "cxxlab/lockfree/spsc/blocking_inplace_queue.hpp"
 
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -21,18 +21,18 @@
 using namespace std::chrono_literals;
 
 TEST_CASE(
-   "spsc::static_blocking_queue - capacity is power of 2", "[spsc][blocking_queue][capacity]")
+   "spsc::blocking_inplace_queue - capacity is power of 2", "[spsc][blocking_queue][capacity]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 7>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 7>{};
    STATIC_CHECK(queue.capacity() == 8);
 
-   auto queue2 = cxxlab::spsc::static_blocking_queue<int, 8>{};
+   auto queue2 = cxxlab::spsc::blocking_inplace_queue<int, 8>{};
    STATIC_CHECK(queue2.capacity() == 8);
 }
 
-TEST_CASE("spsc::static_blocking_queue - correct size tracking", "[spsc][blocking_queue][size]")
+TEST_CASE("spsc::blocking_inplace_queue - correct size tracking", "[spsc][blocking_queue][size]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 4>{};
    auto result = 0;
 
    // Enqueue
@@ -120,10 +120,10 @@ TEST_CASE("spsc::static_blocking_queue - correct size tracking", "[spsc][blockin
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - single-threaded try_enqueue and try_dequeue",
+   "spsc::blocking_inplace_queue - single-threaded try_enqueue and try_dequeue",
    "[spsc][blocking_queue]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 4>{};
 
    CHECK(queue.capacity() == 4);
 
@@ -170,11 +170,11 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_enqueue and try_dequeue",
+   "spsc::blocking_inplace_queue - concurrent try_enqueue and try_dequeue",
    "[spsc][blocking_queue][concurrent]")
 {
    constexpr auto N = 1024;
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 4>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 4>{};
 
    auto expected = std::views::iota(0, N);
    auto result = std::vector<int>{};
@@ -211,11 +211,11 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent, blocking enqueue and dequeue",
+   "spsc::blocking_inplace_queue - concurrent, blocking enqueue and dequeue",
    "[spsc][blocking_queue][concurrent]")
 {
    constexpr auto N = 1024;
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 16>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 16>{};
 
    auto expected = std::views::iota(0, N);
    auto result = std::vector<int>{};
@@ -247,11 +247,11 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - single-threaded try_emplace_for/until times out",
+   "spsc::blocking_inplace_queue - single-threaded try_emplace_for/until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
-   auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<std::string, 2>{};
 
    CHECK(queue.try_enqueue("ten"));
    CHECK(queue.try_enqueue("twenty"));
@@ -277,10 +277,10 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_emplace_for unblocks and emplaces element",
+   "spsc::blocking_inplace_queue - concurrent try_emplace_for unblocks and emplaces element",
    "[spsc][blocking_queue][concurrent]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<std::string, 2>{};
    CHECK(queue.try_emplace("ten"));
    CHECK(queue.try_emplace("twenty"));
 
@@ -301,10 +301,10 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_emplace_until unblocks and emplaces element",
+   "spsc::blocking_inplace_queue - concurrent try_emplace_until unblocks and emplaces element",
    "[spsc][blocking_queue][concurrent]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<std::string, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<std::string, 2>{};
    CHECK(queue.try_emplace("ten"));
    CHECK(queue.try_emplace("twenty"));
 
@@ -327,11 +327,11 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - single-threaded try_enqueue_for/until times out",
+   "spsc::blocking_inplace_queue - single-threaded try_enqueue_for/until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
 
    CHECK(queue.try_enqueue(10));
    CHECK(queue.try_enqueue(20));
@@ -357,10 +357,10 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_enqueue_for unblocks and enqueues element",
+   "spsc::blocking_inplace_queue - concurrent try_enqueue_for unblocks and enqueues element",
    "[spsc][blocking_queue][concurrent]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
    CHECK(queue.try_enqueue(10));
    CHECK(queue.try_enqueue(20));
 
@@ -381,10 +381,10 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_enqueue_until unblocks and enqueues element",
+   "spsc::blocking_inplace_queue - concurrent try_enqueue_until unblocks and enqueues element",
    "[spsc][blocking_queue][concurrent]")
 {
-   auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+   auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
    CHECK(queue.try_enqueue(10));
    CHECK(queue.try_enqueue(20));
 
@@ -406,14 +406,14 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - single-threaded try_dequeue_for times out",
+   "spsc::blocking_inplace_queue - single-threaded try_dequeue_for times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
 
    SECTION("optional return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto start = std::chrono::steady_clock::now();
       auto elem = queue.try_dequeue_for(timeout);
 
@@ -423,7 +423,7 @@ TEST_CASE(
 
    SECTION("out param return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto start = std::chrono::steady_clock::now();
       auto result = int{0};
 
@@ -433,14 +433,14 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - single-threaded try_dequeue_until times out",
+   "spsc::blocking_inplace_queue - single-threaded try_dequeue_until times out",
    "[spsc][blocking_queue]")
 {
    static constexpr auto timeout = 10ms;
 
    SECTION("optional return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto elem = queue.try_dequeue_until(deadline);
 
@@ -450,7 +450,7 @@ TEST_CASE(
 
    SECTION("out param return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto deadline = std::chrono::steady_clock::now() + timeout;
       auto result = int{0};
 
@@ -460,12 +460,12 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_dequeue_for unblocks and dequeues element",
+   "spsc::blocking_inplace_queue - concurrent try_dequeue_for unblocks and dequeues element",
    "[spsc][blocking_queue][concurrent]")
 {
    SECTION("optional return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto producer = std::jthread(
          [&queue]()
          {
@@ -480,7 +480,7 @@ TEST_CASE(
 
    SECTION("out param return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto result = int{0};
       auto producer = std::jthread(
          [&queue]()
@@ -495,12 +495,12 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - concurrent try_dequeue_until unblocks and dequeues element",
+   "spsc::blocking_inplace_queue - concurrent try_dequeue_until unblocks and dequeues element",
    "[spsc][blocking_queue][concurrent]")
 {
    SECTION("optional return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto producer = std::jthread(
          [&queue]()
          {
@@ -515,7 +515,7 @@ TEST_CASE(
 
    SECTION("out param return value")
    {
-      auto queue = cxxlab::spsc::static_blocking_queue<int, 2>{};
+      auto queue = cxxlab::spsc::blocking_inplace_queue<int, 2>{};
       auto result = int{0};
       auto producer = std::jthread(
          [&queue]()

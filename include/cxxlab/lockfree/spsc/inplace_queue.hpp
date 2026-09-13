@@ -34,7 +34,7 @@ namespace cxxlab::spsc
  * capacity.
  */
 template <typename T, std::size_t Capacity>
-class static_queue
+class inplace_queue
 {
    // Power of 2 capacity.
    static constexpr auto BIT_CEIL_CAPACITY_ = std::bit_ceil(Capacity);
@@ -229,7 +229,7 @@ class static_queue
    /**
     * @brief Destructs all the elements in the queue.
     */
-   ~static_queue()
+   ~inplace_queue()
    {
       while (try_dequeue())
       {

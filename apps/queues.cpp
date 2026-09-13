@@ -7,8 +7,8 @@
  * @author Devin DeLong
  */
 
-#include "cxxlab/lockfree/spsc/static_blocking_queue.hpp"
-#include "cxxlab/lockfree/spsc/static_queue.hpp"
+#include "cxxlab/lockfree/spsc/blocking_inplace_queue.hpp"
+#include "cxxlab/lockfree/spsc/inplace_queue.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -21,8 +21,8 @@
 
 auto benchmark_latency(std::size_t num_iterations) -> std::chrono::steady_clock::duration
 {
-   auto ping = cxxlab::spsc::static_queue<std::int32_t, 1024>{};
-   auto pong = cxxlab::spsc::static_queue<std::int32_t, 1024>{};
+   auto ping = cxxlab::spsc::inplace_queue<std::int32_t, 1024>{};
+   auto pong = cxxlab::spsc::inplace_queue<std::int32_t, 1024>{};
    auto start = std::latch{2};
    auto samples = std::vector<std::chrono::steady_clock::duration>(num_iterations);
 
@@ -88,7 +88,7 @@ auto benchmark_latency(std::size_t num_iterations) -> std::chrono::steady_clock:
 auto benchmark_throughput(std::size_t num_elements) -> std::chrono::steady_clock::duration
 {
 
-   auto q = cxxlab::spsc::static_queue<std::size_t, 1024>{};
+   auto q = cxxlab::spsc::inplace_queue<std::size_t, 1024>{};
    // moodycamel::ReaderWriterQueue<int> q(1024);  // fixed capacity
 
    auto start = std::latch{2};

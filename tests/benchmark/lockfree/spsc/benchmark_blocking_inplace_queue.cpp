@@ -7,7 +7,7 @@
  * @author Devin DeLong
  */
 
-#include "cxxlab/lockfree/spsc/static_blocking_queue.hpp"
+#include "cxxlab/lockfree/spsc/blocking_inplace_queue.hpp"
 
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -17,11 +17,11 @@
 #include <thread>
 
 TEST_CASE(
-   "spsc::static_blocking_queue - benchmark blocking latency", "[spsc][static_blocking_queue]")
+   "spsc::blocking_inplace_queue - benchmark blocking latency", "[spsc][blocking_inplace_queue]")
 {
    static constexpr auto queue_size = 1024uz;
-   auto ping = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
-   auto pong = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+   auto ping = cxxlab::spsc::blocking_inplace_queue<std::int32_t, queue_size>{};
+   auto pong = cxxlab::spsc::blocking_inplace_queue<std::int32_t, queue_size>{};
    auto timeout = std::chrono::milliseconds{1};
 
    std::jthread responder(
@@ -51,14 +51,15 @@ TEST_CASE(
 }
 
 TEST_CASE(
-   "spsc::static_blocking_queue - benchmark non-blocking latency", "[spsc][static_blocking_queue]")
+   "spsc::blocking_inplace_queue - benchmark non-blocking latency",
+   "[spsc][blocking_inplace_queue]")
 {
    // Benchmarks the overhead of the counting_semaphores when only non-blocking
    // try_enqueue/try_dequeue member functions are called. This is the same test used in the
    // non-blocing queue.
    static constexpr auto queue_size = 1024uz;
-   auto ping = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
-   auto pong = cxxlab::spsc::static_blocking_queue<std::int32_t, queue_size>{};
+   auto ping = cxxlab::spsc::blocking_inplace_queue<std::int32_t, queue_size>{};
+   auto pong = cxxlab::spsc::blocking_inplace_queue<std::int32_t, queue_size>{};
 
    std::jthread responder(
       [&](std::stop_token st)

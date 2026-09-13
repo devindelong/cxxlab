@@ -10,7 +10,7 @@
 #pragma once
 
 #include "cxxlab/concepts/chrono.hpp"
-#include "cxxlab/lockfree/spsc/static_queue.hpp"
+#include "cxxlab/lockfree/spsc/inplace_queue.hpp"
 #include "cxxlab/memory/cache_line_size.hpp"
 
 #include <algorithm>
@@ -39,10 +39,10 @@ namespace cxxlab::spsc
  * gcc-15.2, but unsure of exactly which versions have the patch.
  */
 template <typename T, std::size_t Capacity>
-class static_blocking_queue
+class blocking_inplace_queue
 {
    // Lock-free, statically-sized queue.
-   using queue_type = static_queue<T, Capacity>;
+   using queue_type = inplace_queue<T, Capacity>;
    // The semaphore used.
    using semaphore_type = std::counting_semaphore<queue_type::capacity()>;
    // Type to indicate there is no wait argument to try_acquire.

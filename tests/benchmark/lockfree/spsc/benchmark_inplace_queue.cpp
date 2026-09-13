@@ -7,7 +7,7 @@
  * @author Devin DeLong
  */
 
-#include "cxxlab/lockfree/spsc/static_queue.hpp"
+#include "cxxlab/lockfree/spsc/inplace_queue.hpp"
 
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -20,11 +20,11 @@
 // Benchmarks
 // -------------------------------------------------------------------------------------------------
 
-TEST_CASE("spsc::static_queue - benchmark latency", "[spsc][static_queue]")
+TEST_CASE("spsc::inplace_queue - benchmark latency", "[spsc][inplace_queue]")
 {
    static constexpr auto queue_size = 1024;
-   auto ping = cxxlab::spsc::static_queue<std::int64_t, queue_size>{};
-   auto pong = cxxlab::spsc::static_queue<std::int64_t, queue_size>{};
+   auto ping = cxxlab::spsc::inplace_queue<std::int64_t, queue_size>{};
+   auto pong = cxxlab::spsc::inplace_queue<std::int64_t, queue_size>{};
 
    std::jthread responder(
       [&](std::stop_token st)
@@ -63,12 +63,12 @@ TEST_CASE("spsc::static_queue - benchmark latency", "[spsc][static_queue]")
       ;
 }
 
-TEST_CASE("spsc::static_queue - benchmark throughput", "[spsc][static_queue]")
+TEST_CASE("spsc::inplace_queue - benchmark throughput", "[spsc][inplace_queue]")
 {
    static constexpr auto queue_size = 1024uz;
    static constexpr auto num_elements = 1'048'576uz;
 
-   auto queue = cxxlab::spsc::static_queue<std::size_t, queue_size>{};
+   auto queue = cxxlab::spsc::inplace_queue<std::size_t, queue_size>{};
 
    // Preill to half capacity.
    for (auto n : std::views::iota(0uz, queue_size / 2))
@@ -113,14 +113,14 @@ TEST_CASE("spsc::static_queue - benchmark throughput", "[spsc][static_queue]")
    }
 }
 
-TEST_CASE("spsc::static_queue - benchmark bulk throughput", "[spsc][static_queue]")
+TEST_CASE("spsc::inplace_queue - benchmark bulk throughput", "[spsc][inplace_queue]")
 {
    static constexpr auto queue_size = 1024uz * 4;
    static constexpr auto bulk_size = 16uz;
    static constexpr auto num_elements = 1'048'576uz; // 2^20
    static constexpr auto num_dequeue = num_elements / bulk_size;
 
-   auto queue = cxxlab::spsc::static_queue<std::size_t, queue_size>{};
+   auto queue = cxxlab::spsc::inplace_queue<std::size_t, queue_size>{};
 
    // Preill to half capacity.
    for (auto n : std::views::iota(0uz, queue_size / 2))
