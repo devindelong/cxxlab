@@ -10,6 +10,7 @@
 #include "cxxlab/pipes.hpp"
 
 #include <algorithm>
+#include <format>
 #include <iterator>
 #include <print>
 #include <ranges>
@@ -26,14 +27,8 @@ int main()
          input, cxxlab::pipes::stride(3) | cxxlab::pipes::transform(square) |
                    cxxlab::pipes::drop(2) | cxxlab::pipes::take(20) | cxxlab::pipes::filter(evens) |
                    std::back_inserter(result));
-      std::print("RESULT : ");
-      for (const auto elem : result)
-      {
-         std::print("{} ", elem);
-      }
+      std::println("RESULT : {}", result);
    }
-
-   std::println();
 
    {
       auto less_than_50 = [](auto const& x) { return x < 50; };
@@ -42,14 +37,8 @@ int main()
       std::ranges::copy(
          input, cxxlab::pipes::take_while(less_than_50) | cxxlab::pipes::stride(3) |
                    std::back_inserter(result));
-      std::print("RESULT : ");
-      for (const auto elem : result)
-      {
-         std::print("{} ", elem);
-      }
+      std::println("RESULT : {}", result);
    }
-
-   std::println();
 
    return 0;
 }
